@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vertera — Справочник продуктов</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tg-theme-bg-color: #ffffff;
+    --tg-theme-text-color: #1a1a2e;
+    --tg-theme-hint-color: #7f8c8d;
+    --tg-theme-link-color: #2d8a5e;
+    --tg-theme-button-color: #2d8a5e;
+    --tg-theme-button-text-color: #ffffff;
+    --accent: #2d8a5e;
+    --accent2: #4ecb8a;
+    --bg: #f0f7f4;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #7a8a85;
+    --radius: 18px;
+    --shadow: 0 4px 20px rgba(45,138,94,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ——— HEADER ——— */
+  .header {
+    background: linear-gradient(135deg, #1a5c3a 0%, #2d8a5e 60%, #4ecb8a 100%);
+    padding: 20px 16px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(45,138,94,0.3);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .logo-text {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: -2px;
+  }
+
+  /* ——— SEARCH ——— */
+  .search-wrap {
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 44px 12px 44px;
+    border-radius: 50px;
+    border: none;
+    background: rgba(255,255,255,0.92);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+    transition: all .2s;
+  }
+  .search-input:focus {
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(45,138,94,0.25);
+  }
+  .search-icon {
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+    font-size: 17px; opacity: 0.5; pointer-events: none;
+  }
+  .search-clear {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 17px; opacity: 0.6; cursor: pointer; display: none;
+    background: none; border: none; padding: 4px;
+  }
+
+  /* ——— CATEGORY TABS ——— */
+  .cats-scroll {
+    overflow-x: auto;
+    padding: 12px 16px 0;
+    display: flex;
+    gap: 8px;
+    scrollbar-width: none;
+  }
+  .cats-scroll::-webkit-scrollbar { display: none; }
+  .cat-tab {
+    white-space: nowrap;
+    padding: 6px 14px;
+    border-radius: 50px;
+    border: 1.5px solid #d4e9df;
+    background: #fff;
+    font-size: 13px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .cat-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(45,138,94,0.3);
+  }
+
+  /* ——— GRID ——— */
+  .grid-section {
+    padding: 16px 12px 100px;
+  }
+  .section-title {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title span { color: var(--accent); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+
+  /* ——— PRODUCT CARD ——— */
+  .product-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform .18s, box-shadow .18s;
+    border: 1px solid rgba(45,138,94,0.08);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-card:active { transform: scale(0.97); }
+
+  .card-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: #f0f7f4;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 8px;
+    transition: transform .3s;
+  }
+  .product-card:hover .card-img { transform: scale(1.04); }
+  .card-img-placeholder {
+    font-size: 52px;
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .card-badge.new { background: #e74c3c; }
+  .card-badge.hit { background: #f39c12; }
+
+  .card-body {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-name {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .card-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 8px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    gap: 3px;
+  }
+
+  /* ——— NO RESULTS ——— */
+  .no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    display: none;
+  }
+  .no-results-icon { font-size: 48px; margin-bottom: 12px; }
+  .no-results h3 { font-family: 'Raleway', sans-serif; font-size: 18px; margin-bottom: 6px; color: var(--text); }
+
+  /* ——— DETAIL SHEET ——— */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    display: none;
+    backdrop-filter: blur(3px);
+  }
+  .overlay.show { display: block; }
+
+  .detail-sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--card-bg);
+    border-radius: 24px 24px 0 0;
+    z-index: 300;
+    max-height: 88vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    scrollbar-width: none;
+    padding-bottom: 32px;
+  }
+  .detail-sheet::-webkit-scrollbar { display: none; }
+  .detail-sheet.open { transform: translateY(0); }
+
+  .sheet-handle {
+    width: 40px; height: 4px;
+    background: #d0d0d0;
+    border-radius: 2px;
+    margin: 14px auto 0;
+  }
+  .sheet-close {
+    position: absolute; top: 14px; right: 16px;
+    width: 32px; height: 32px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    color: #888;
+    transition: background .2s;
+  }
+  .sheet-close:active { background: #e0e0e0; }
+
+  .sheet-img-wrap {
+    width: 100%;
+    height: 240px;
+    background: #f0f7f4;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin: 8px 0 0;
+    position: relative;
+  }
+  .sheet-img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 16px;
+  }
+  .sheet-img-placeholder { font-size: 80px; opacity: 0.3; }
+
+  .sheet-content {
+    padding: 20px 20px 0;
+  }
+  .sheet-category {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #e8f5ee;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+  .sheet-title {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .sheet-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .info-block {
+    background: #f6fbf8;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .info-block-title {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .info-block-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .info-block-text ul {
+    padding-left: 16px;
+    margin-top: 4px;
+  }
+  .info-block-text li { margin-bottom: 4px; }
+
+  .dosage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .dosage-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid #d4e9df;
+  }
+  .dosage-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 3px;
+  }
+  .dosage-val {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .tags-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 16px;
+  }
+  .tag {
+    background: #e8f5ee;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 50px;
+  }
+  .tag.vegan { background: #e8f5ee; color: #2d8a5e; }
+  .tag.halal { background: #fff3e0; color: #e67e22; }
+  .tag.kosher { background: #e8eaf6; color: #3f51b5; }
+
+  .sheet-link {
+    display: block;
+    margin: 16px 0 0;
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    transition: background .2s;
+  }
+  .sheet-link:active { background: #1a5c3a; }
+
+  /* ——— COUNT BADGE ——— */
+  .count-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 50px;
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo-wrap">
+      <div class="logo-icon">🌿</div>
+      <div>
+        <div class="logo-text">VERTERA</div>
+        <div class="logo-sub">Справочник продуктов</div>
+      </div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" id="searchInput" placeholder="Найти продукт..." autocomplete="off" />
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="cats-scroll" id="catsTabs">
+  <div class="cat-tab active" data-cat="all">Все</div>
+  <div class="cat-tab" data-cat="гели">Гели</div>
+  <div class="cat-tab" data-cat="капсулы">Капсулы/БАДы</div>
+  <div class="cat-tab" data-cat="косметика">Косметика</div>
+  <div class="cat-tab" data-cat="наборы">Наборы</div>
+</div>
+
+<!-- GRID -->
+<div class="grid-section">
+  <div class="section-title">
+    Каталог <span id="productCount"></span>
+    <div class="count-badge" id="countBadge">53/div>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">🌿</div>
+    <h3>Ничего не найдено</h3>
+    <p>Попробуйте другой запрос</p>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="detail-sheet" id="detailSheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" onclick="closeSheet()">✕</button>
+  <div id="sheetInner"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  ЛОКАЛЬНЫЕ КАРТИНКИ
+//  Папка  должна лежать
+//  рядом с этим HTML файлом
+// ══════════════════════════════════════════════
+const IMG = (f) => f;
+
+// ══════════════════════════════════════════════
+//  PRODUCTS DATA — 55 продуктов с локальными фото
+// ══════════════════════════════════════════════
+const PRODUCTS = [
+  // ─── НАБОРЫ ───────────────────────────────
+  {
+    id: 1,
+    name: "Набор Plasma Therapy",
+    shortDesc: "Комплексный набор премиум-косметики",
+    category: "наборы",
+    badge: "hit",
+    img: IMG("Набор_Plasma_Therapy.jpg"),
+    tags: ["vegan"],
+    emoji: "🎁",
+    description: "Премиальный набор косметики Plasma Therapy на основе биогелей ламинарии. Включает полный уход за кожей лица с применением технологии плазмотерапии. Комплексное омолаживающее действие.",
+    benefits: ["Омоложение кожи","Плазмотерапия","Полный уход за лицом","Антивозрастной эффект"],
+    usage: "Применять каждый продукт набора согласно инструкции на упаковке. Утром — сыворотка + крем, вечером — маска + тоник.",
+    dosage: [{ label: "Состав", value: "4 продукта" },{ label: "Применение", value: "Наружно" },{ label: "Курс", value: "1 месяц" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 2,
+    name: "VODOROSLIM Premium №1",
+    shortDesc: "Премиум программа снижения веса №1",
+    category: "наборы",
+    badge: "hit",
+    img: IMG("VODOROSLIM_Premium_№1.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Премиальная программа контроля веса на основе водорослей. Набор №1 — стартовый комплекс для эффективного снижения веса. Содержит продукты для детокса, насыщения и поддержки метаболизма.",
+    benefits: ["Снижение веса","Детокс организма","Контроль аппетита","Ускорение метаболизма"],
+    usage: "Применять согласно программе VODOROSLIM. Следовать схеме приёма внутри набора.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Premium" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "1" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 3,
+    name: "VODOROSLIM Premium №2",
+    shortDesc: "Премиум программа снижения веса №2",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Premium_№2.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Продолжение премиальной программы VODOROSLIM. Набор №2 — поддерживающий комплекс для закрепления результата снижения веса и формирования правильных пищевых привычек.",
+    benefits: ["Закрепление результата","Поддержка метаболизма","Правильное питание","Детокс"],
+    usage: "Применять согласно программе VODOROSLIM на втором этапе. Следовать схеме приёма внутри набора.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Premium" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "2" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 4,
+    name: "VODOROSLIM Premium №3",
+    shortDesc: "Премиум программа снижения веса №3",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Premium_№3.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Третий этап премиальной программы VODOROSLIM. Комплекс для стабилизации веса и поддержания достигнутых результатов.",
+    benefits: ["Стабилизация веса","Поддержка результата","Здоровый образ жизни","Детокс"],
+    usage: "Применять согласно программе VODOROSLIM на третьем этапе.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Premium" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "3" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 5,
+    name: "VODOROSLIM Premium №4",
+    shortDesc: "Премиум программа снижения веса №4",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Premium_№4.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Завершающий этап премиальной программы VODOROSLIM. Финальный комплекс для поддержания идеального веса и закрепления новых привычек питания.",
+    benefits: ["Поддержание веса","Закрепление привычек","Здоровое питание","Долгосрочный результат"],
+    usage: "Применять согласно программе VODOROSLIM на завершающем этапе.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Premium" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "4" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 6,
+    name: "VODOROSLIM Start №1",
+    shortDesc: "Стартовая программа снижения веса №1",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Start_№1.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Стартовый набор программы VODOROSLIM для начинающих. Оптимальный вход в программу снижения веса на основе водорослей.",
+    benefits: ["Лёгкий старт","Снижение веса","Детокс","Контроль аппетита"],
+    usage: "Применять согласно программе VODOROSLIM Start.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Start" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "1" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 7,
+    name: "VODOROSLIM Start №2",
+    shortDesc: "Стартовая программа снижения веса №2",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Start_№2.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Второй этап стартовой программы VODOROSLIM. Продолжение курса снижения веса с закреплением результата.",
+    benefits: ["Закрепление результата","Снижение веса","Детокс","Метаболизм"],
+    usage: "Применять согласно программе VODOROSLIM Start, этап 2.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Start" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "2" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 8,
+    name: "VODOROSLIM Start №3",
+    shortDesc: "Стартовая программа снижения веса №3",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Start_№3.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Третий этап стартовой программы VODOROSLIM. Стабилизация и поддержание достигнутого результата.",
+    benefits: ["Стабилизация веса","Поддержка результата","Здоровое питание","Детокс"],
+    usage: "Применять согласно программе VODOROSLIM Start, этап 3.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Start" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "3" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 9,
+    name: "VODOROSLIM Start №4",
+    shortDesc: "Стартовая программа снижения веса №4",
+    category: "наборы",
+    badge: "",
+    img: IMG("VODOROSLIM_Start_№4.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Завершающий этап стартовой программы VODOROSLIM. Финальный шаг к идеальному весу и новым привычкам.",
+    benefits: ["Поддержание веса","Закрепление привычек","Долгосрочный результат","Детокс"],
+    usage: "Применять согласно программе VODOROSLIM Start, этап 4.",
+    dosage: [{ label: "Программа", value: "VODOROSLIM" },{ label: "Уровень", value: "Start" },{ label: "Курс", value: "1 месяц" },{ label: "№ набора", value: "4" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 10,
+    name: "Набор IMMUNO Personal",
+    shortDesc: "Персональный иммунный комплекс",
+    category: "наборы",
+    badge: "hit",
+    img: IMG("Набор_IMMUNO_Personal.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Персональный набор для укрепления иммунитета. Подобранный комплекс продуктов Vertera для комплексной поддержки иммунной системы в течение месяца.",
+    benefits: ["Укрепление иммунитета","Персональный подбор","Комплексная защита","Детокс"],
+    usage: "Применять каждый продукт набора согласно инструкции. Курс 1 месяц.",
+    dosage: [{ label: "Курс", value: "1 месяц" },{ label: "Назначение", value: "Иммунитет" },{ label: "Состав", value: "Несколько продуктов" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 11,
+    name: "EXTRA DETOX",
+    shortDesc: "Интенсивная программа детоксикации",
+    category: "наборы",
+    badge: "hit",
+    img: IMG("EXTRA_DETOX.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Интенсивный детокс-комплекс на основе продуктов Vertera. Программа глубокого очищения организма от токсинов, тяжёлых металлов и шлаков.",
+    benefits: ["Глубокий детокс","Очищение от токсинов","Вывод тяжёлых металлов","Обновление клеток"],
+    usage: "Применять согласно программе EXTRA DETOX. Следовать схеме внутри набора.",
+    dosage: [{ label: "Программа", value: "EXTRA DETOX" },{ label: "Курс", value: "Согласно схеме" },{ label: "Назначение", value: "Детокс" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 12,
+    name: "Набор IMMUNO Personal 2.0",
+    shortDesc: "Улучшенный персональный иммунный комплекс",
+    category: "наборы",
+    badge: "hit",
+    img: IMG("Набор_IMMUNO_Personal_2.0.jpg"),
+    tags: ["vegan","halal"],
+    emoji: "🎁",
+    description: "Обновлённая версия персонального иммунного набора с улучшенным составом. Усиленная формула для ещё более эффективной поддержки иммунной системы.",
+    benefits: ["Мощный иммунитет","Улучшенная формула","Комплексная защита","Антивирусная защита"],
+    usage: "Применять каждый продукт набора согласно инструкции. Курс 1 месяц.",
+    dosage: [{ label: "Версия", value: "2.0" },{ label: "Курс", value: "1 месяц" },{ label: "Назначение", value: "Иммунитет" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить каждый продукт согласно условиям на упаковке.",
+    url: "https://vertera.org/ru/catalog"
+  },
+
+  // ─── КОСМЕТИКА ────────────────────────────
+  {
+    id: 13,
+    name: "Сыворотка для лица «PLASMA THERAPY»",
+    shortDesc: "Антивозрастная сыворотка с биогелем",
+    category: "косметика",
+    badge: "",
+    img: IMG("Сыворотка_для_лица_«PLASMA_THERAPY».png"),
+    tags: ["vegan"],
+    emoji: "✨",
+    description: "Концентрированная антивозрастная сыворотка на основе биогелей ламинарии. Технология Plasma Therapy обеспечивает глубокое проникновение активных компонентов в кожу. Разглаживает морщины, повышает упругость и эластичность кожи.",
+    benefits: ["Разглаживание морщин","Глубокое увлажнение","Упругость кожи","Антивозрастной эффект","Plasma Technology"],
+    usage: "Нанести несколько капель сыворотки на очищенную кожу лица. Лёгкими движениями распределить и дать впитаться. Применять утром и вечером перед кремом.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "2 раза в день" },{ label: "Курс", value: "1 месяц" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 14,
+    name: "Крем «PLASMA THERAPY»",
+    shortDesc: "Омолаживающий крем с технологией плазмы",
+    category: "косметика",
+    badge: "",
+    img: IMG("Крем_«PLASMA_THERAPY».png"),
+    tags: ["vegan"],
+    emoji: "💆",
+    description: "Омолаживающий крем для лица на основе биогелей ламинарии с технологией Plasma Therapy. Насыщает кожу необходимыми нутриентами, восстанавливает естественный барьер кожи.",
+    benefits: ["Омоложение","Питание кожи","Восстановление барьера","Увлажнение","Антивозрастной эффект"],
+    usage: "Нанести крем на очищенную кожу лица лёгкими массирующими движениями. Использовать утром и/или вечером.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "1–2 раза в день" },{ label: "Курс", value: "По желанию" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 15,
+    name: "Тоник для лица «PLASMA THERAPY»",
+    shortDesc: "Балансирующий тоник на биогеле ламинарии",
+    category: "косметика",
+    badge: "",
+    img: IMG("Тоник_для_лица_«PLASMA_THERAPY».png"),
+    tags: ["vegan"],
+    emoji: "💧",
+    description: "Балансирующий тоник для лица на основе биогелей ламинарии. Подготавливает кожу к нанесению сыворотки и крема, восстанавливает pH, сужает поры.",
+    benefits: ["Балансировка pH","Сужение пор","Подготовка кожи","Увлажнение","Очищение"],
+    usage: "Нанести на очищенную кожу лица с помощью ватного диска или спрея после умывания. Применять перед сывороткой и кремом.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "2 раза в день" },{ label: "Способ", value: "Ватный диск / спрей" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 16,
+    name: "«PLASMA THERAPY» — пробник",
+    shortDesc: "Пробный набор косметики Plasma Therapy",
+    category: "косметика",
+    badge: "",
+    img: IMG("«PLASMA_THERAPY»_пробник.jpg"),
+    tags: ["vegan"],
+    emoji: "🎀",
+    description: "Пробный набор косметики Plasma Therapy для знакомства с линейкой. Миниатюрные версии ключевых продуктов серии для тестирования перед покупкой полноразмерных продуктов.",
+    benefits: ["Знакомство с линейкой","Удобный формат","Полный уход","Тестовый набор"],
+    usage: "Применять каждый продукт пробника согласно инструкции на мини-упаковке.",
+    dosage: [{ label: "Формат", value: "Мини / пробник" },{ label: "Применение", value: "Наружно" },{ label: "Назначение", value: "Тестирование" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 17,
+    name: "Thalasso spa gel",
+    shortDesc: "SPA-гель из морских водорослей для тела",
+    category: "косметика",
+    badge: "new",
+    img: IMG("Thalasso_spa_gel.png"),
+    tags: ["vegan"],
+    emoji: "🛁",
+    description: "Профессиональный SPA-гель на основе морских водорослей. Обеспечивает интенсивное увлажнение, питание и детокс кожи тела. Содержит комплекс минералов и биоактивных веществ ламинарии.",
+    benefits: ["Интенсивное увлажнение","Детокс кожи","Питание","Упругость кожи","SPA-эффект"],
+    usage: "Нанести гель на влажную или сухую кожу тела массирующими движениями. Оставить на 15–20 минут, смыть тёплой водой. Использовать 2–3 раза в неделю.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "2–3 раза/нед." },{ label: "Время", value: "15–20 минут" },{ label: "Срок годности", value: "12 месяцев" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 18,
+    name: "Seaweed body oil",
+    shortDesc: "Масло для тела с экстрактом водорослей",
+    category: "косметика",
+    badge: "",
+    img: IMG("Seaweed_body_oil.png"),
+    tags: ["vegan"],
+    emoji: "🌊",
+    description: "Роскошное масло для тела с экстрактом морских водорослей. Питает, увлажняет и придаёт коже шелковистость. Содержит омега-кислоты и биоактивные вещества ламинарии.",
+    benefits: ["Шелковистость кожи","Питание","Увлажнение","Омега-кислоты","Биоактивные вещества"],
+    usage: "Нанести масло на чистую кожу тела после душа. Слегка помассировать до полного впитывания. Использовать ежедневно.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "Ежедневно" },{ label: "Способ", value: "После душа" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 19,
+    name: "Seaweed biomask for face",
+    shortDesc: "Биомаска для лица из морских водорослей",
+    category: "косметика",
+    badge: "",
+    img: IMG("Seaweed_biomask_for_face.png"),
+    tags: ["vegan"],
+    emoji: "🌿",
+    description: "Натуральная биомаска для лица на основе морских водорослей. Глубоко очищает, увлажняет и питает кожу. Содержит полный комплекс биоактивных веществ ламинарии.",
+    benefits: ["Глубокое очищение","Интенсивное увлажнение","Питание кожи","Сужение пор","Детокс кожи"],
+    usage: "Нанести маску на очищенное лицо ровным слоем. Оставить на 15–20 минут. Смыть тёплой водой. Использовать 2–3 раза в неделю.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Частота", value: "2–3 раза/нед." },{ label: "Время", value: "15–20 минут" },{ label: "Тип кожи", value: "Все типы" }],
+    storage: "Хранить при температуре от +5°С до +25°С, вдали от прямых солнечных лучей.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 20,
+    name: "AngioLive Mask 580 г",
+    shortDesc: "Обёртывание для тела с экстрактом винограда",
+    category: "косметика",
+    badge: "hit",
+    img: IMG("AngioLive_Mask_580_г.jpg"),
+    tags: ["vegan"],
+    emoji: "🛁",
+    description: "Профессиональная маска-обёртывание для тела AngioLive с экстрактом виноградных косточек. Антицеллюлитный, дренажный и детокс-эффект. Подтягивает и тонизирует кожу.",
+    benefits: ["Антицеллюлитный эффект","Дренаж","Детокс кожи","Подтяжка","Тонизирование"],
+    usage: "Нанести маску на проблемные зоны, обернуть плёнкой, оставить на 40–60 минут. Смыть тёплой водой. Использовать 2–3 раза в неделю.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Время", value: "40–60 минут" },{ label: "Частота", value: "2–3 раза/нед." },{ label: "Объём", value: "580 г" }],
+    storage: "Хранить при температуре от +2°С до +20°С в закрытой упаковке.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+  {
+    id: 21,
+    name: "AngioLive Mask 250 ml",
+    shortDesc: "Маска-обёртывание для тела, 250 мл",
+    category: "косметика",
+    badge: "",
+    img: IMG("AngioLive_Mask_250_ml.jpg"),
+    tags: ["vegan"],
+    emoji: "🛁",
+    description: "Маска-обёртывание AngioLive в формате 250 мл — удобный размер для первого знакомства. Антицеллюлитный и детокс-эффект на основе экстракта виноградных косточек и ламинарии.",
+    benefits: ["Антицеллюлитный эффект","Детокс кожи","Подтяжка","Удобный объём"],
+    usage: "Нанести маску на кожу, обернуть плёнкой, оставить на 40–60 минут. Смыть тёплой водой.",
+    dosage: [{ label: "Применение", value: "Наружно" },{ label: "Время", value: "40–60 минут" },{ label: "Частота", value: "2–3 раза/нед." },{ label: "Объём", value: "250 мл" }],
+    storage: "Хранить при температуре от +2°С до +20°С в закрытой упаковке.",
+    url: "https://vertera.org/ru/catalog/kosmetika"
+  },
+
+  // ─── ГЕЛИ ─────────────────────────────────
+  {
+    id: 22,
+    name: "Vertera Gel",
+    shortDesc: "Гель из ламинарии для ежедневного питания",
+    category: "гели",
+    badge: "",
+    img: IMG("Vertera_Gel.jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "🌊",
+    description: "Эффективный и безопасный продукт с полезными веществами ламинарии для ежедневного питания. Клетки ламинарии содержат богатейший комплекс незаменимых для человека витаминов, микро- и макроэлементов. С Vertera Gel ваш организм получает 18 витаминов, 8 макроэлементов, 23 микроэлемента, 9 незаменимых аминокислот и 17 полезных ненасыщенных жирных кислот. Официально сертифицирован как специализированный пищевой продукт диетического лечебного питания.",
+    benefits: ["Эффективный детокс","Крепкий иммунитет","Источник органического йода","Здоровый ЖКТ","Укрепление сердца и сосудов","Активное долголетие"],
+    usage: "Принимайте 1 раз в день, предпочтительно утром натощак или за 30 минут до приёма пищи. Продукт можно смешивать с водой, соком или добавлять в смузи.",
+    dosage: [{ label: "Суточная доза", value: "1–2 ст. ложки" },{ label: "Объём", value: "500 г" },{ label: "Курс", value: "1–2 месяца" },{ label: "Возраст", value: "С 3 лет" }],
+    storage: "Хранить при температуре от +2°С до +25°С в сухом месте. После вскрытия хранить в холодильнике не более 30 дней. Беречь от детей.",
+    url: "https://vertera.org/ru/product/laminaria-gel"
+  },
+  {
+    id: 23,
+    name: "Vertera Forte",
+    shortDesc: "Биогели ламинарии + фукус + дигидрокверцетин",
+    category: "гели",
+    badge: "hit",
+    img: IMG("Vertera_Forte.jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "💪",
+    description: "Функциональный продукт на основе клеточных биогелей ламинарии и фукуса, обогащённый дигидрокверцетином. Фукус богат фукоиданом, снижающим риск тромбов, инфарктов и инсультов. Дигидрокверцетин — природный антиоксидант, замедляющий старение.",
+    benefits: ["Антиоксидантная защита","Здоровье сосудов","Иммунная поддержка","Детокс организма","Восполнение нутриентов","Замедление старения"],
+    usage: "Принимать 1 раз в день утром натощак, по 1–2 столовые ложки, запивая водой или смешивая с соком. Рекомендуется курсами 1–2 месяца.",
+    dosage: [{ label: "Суточная доза", value: "1–2 ст. ложки" },{ label: "Объём", value: "500 г" },{ label: "Курс", value: "1–2 месяца" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре от +2°С до +25°С. После вскрытия хранить в холодильнике не более 30 дней.",
+    url: "https://vertera.org/ru/product/vertera-forte"
+  },
+  {
+    id: 24,
+    name: "Vertera Forte «Яблоко»",
+    shortDesc: "Vertera Forte со вкусом яблока",
+    category: "гели",
+    badge: "",
+    img: IMG("Vertera_Forte_«Яблоко».jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "🍏",
+    description: "Vertera Forte со вкусом яблока — все преимущества оригинальной формулы с приятным фруктовым вкусом. Лиофилизированный гель из ламинарии и фукуса с дигидрокверцетином и натуральным яблочным ароматизатором.",
+    benefits: ["Вкус яблока","Антиоксидантная защита","Здоровье сосудов","Иммунная поддержка","Детокс"],
+    usage: "Растворить 1 порцию в 150–200 мл воды. Принимать 1 раз в день утром натощак.",
+    dosage: [{ label: "Суточная доза", value: "1 порция" },{ label: "Объём", value: "580 г" },{ label: "Курс", value: "1–2 месяца" },{ label: "Вкус", value: "Яблоко" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 25,
+    name: "Vertera Forte «Вишня»",
+    shortDesc: "Vertera Forte со вкусом вишни",
+    category: "гели",
+    badge: "",
+    img: IMG("Vertera_Forte_«Вишня».jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "🍒",
+    description: "Vertera Forte со вкусом вишни — полезная формула с освежающим вишнёвым вкусом. Лиофилизированный гель из ламинарии и фукуса с дигидрокверцетином.",
+    benefits: ["Вкус вишни","Антиоксидантная защита","Здоровье сосудов","Иммунная поддержка","Детокс"],
+    usage: "Растворить 1 порцию в 150–200 мл воды. Принимать 1 раз в день утром натощак.",
+    dosage: [{ label: "Суточная доза", value: "1 порция" },{ label: "Объём", value: "580 г" },{ label: "Курс", value: "1–2 месяца" },{ label: "Вкус", value: "Вишня" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 26,
+    name: "Vertera Sensation",
+    shortDesc: "Перезагрузка организма и иммунитет",
+    category: "гели",
+    badge: "",
+    img: IMG("Vertera_Sensation.png"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "✨",
+    description: "Месячный курс Vertera Sensation способен качественно перезагрузить организм, активизировать иммунитет и вернуть отличное самочувствие. Продукт создан для комплексного оздоровления и восстановления сил.",
+    benefits: ["Перезагрузка организма","Активизация иммунитета","Восстановление энергии","Отличное самочувствие"],
+    usage: "Принимать 1–2 раза в день до еды в течение 30 дней согласно схеме на упаковке.",
+    dosage: [{ label: "Суточная доза", value: "По схеме" },{ label: "Курс", value: "30 дней" },{ label: "Объём", value: "500 г" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре от +2°С до +25°С. После вскрытия хранить в холодильнике не более 30 дней.",
+    url: "https://vertera.org/ru/product/vertera-sensation"
+  },
+  {
+    id: 27,
+    name: "AngioLive «Яблоко»",
+    shortDesc: "Здоровье сосудов со вкусом яблока",
+    category: "гели",
+    badge: "",
+    img: IMG("AngioLive_«Яблоко».jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "❤️",
+    description: "AngioLive «Яблоко» — специализированный продукт диетического питания для здоровья сосудов с приятным яблочным вкусом. Лиофилизированный гель из ламинарии и фукуса, обогащённый биокомпонентами винограда и яблока.",
+    benefits: ["Здоровье сосудов","Кардиопротекция","Антиоксидантная защита","Профилактика тромбов","Вкус яблока"],
+    usage: "Принимать 1 порцию 1–2 раза в день за 30 минут до еды, растворив в воде.",
+    dosage: [{ label: "Суточная доза", value: "1–2 порции" },{ label: "Вес нетто", value: "580 г" },{ label: "Курс", value: "1–2 месяца" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом месте. Беречь от детей.",
+    url: "https://vertera.org/ru/product/angiolive-gel-apple"
+  },
+  {
+    id: 28,
+    name: "AngioLive Original",
+    shortDesc: "Оригинальная формула для здоровья сосудов",
+    category: "гели",
+    badge: "",
+    img: IMG("AngioLive_Original.jpg"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "❤️",
+    description: "Оригинальная формула AngioLive — специализированный пищевой продукт диетического лечебного питания. Лиофилизированный гель из ламинарии и фукуса с биокомпонентами винограда. Природные кардиопротекторы для здоровья сосудов.",
+    benefits: ["Здоровье сосудов","Кардиопротекция","Антиоксидантная защита","Профилактика тромбов","Улучшение кровообращения"],
+    usage: "Принимать 1 столовую ложку 1–2 раза в день за 20–30 минут до еды.",
+    dosage: [{ label: "Суточная доза", value: "1–2 ст. ложки" },{ label: "Курс", value: "1–2 месяца" },{ label: "Объём", value: "500 г" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом месте. Беречь от детей.",
+    url: "https://vertera.org/ru/product/angiolive"
+  },
+  {
+    id: 29,
+    name: "Vertera HC (Hydrate Collagen)",
+    shortDesc: "Коллаген с гиалуроновой кислотой и водорослями",
+    category: "гели",
+    badge: "hit",
+    img: IMG("Vertera_HC_(Hydrate_Collagen).jpg"),
+    tags: ["vegan"],
+    emoji: "💧",
+    description: "Уникальный продукт Vertera HC — синергия гидролизованного коллагена, гиалуроновой кислоты и биогелей ламинарии. Комплексный уход за кожей, суставами и соединительной тканью изнутри.",
+    benefits: ["Выработка коллагена","Гиалуроновая кислота","Здоровье суставов","Молодость кожи","Биогели ламинарии"],
+    usage: "Принимать 1 порцию в день, растворив в 200 мл воды. Лучше утром натощак или за 30 минут до еды.",
+    dosage: [{ label: "Суточная доза", value: "1 порция" },{ label: "Курс", value: "30–60 дней" },{ label: "Форма", value: "Порошок/гель" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+
+  // ─── ЛИОФИЛИЗАТЫ ──────────────────────────
+  {
+    id: 30,
+    name: "Лиофилизат Vertera Gel",
+    shortDesc: "Суперконцентрат геля — Plasma Technology",
+    category: "капсулы",
+    badge: "hit",
+    img: IMG("Лиофилизат_Vertera_Gel.png"),
+    tags: ["vegan","halal"],
+    emoji: "🧬",
+    description: "Лиофилизированная форма геля Vertera, изготовленная с применением биотехнологии Plasma Technology. Максимальная концентрация полезных веществ при длительном хранении без потери биодоступности.",
+    benefits: ["Концентрированная польза","Plasma Technology","Долгое хранение","Все полезные вещества","Удобен в путешествиях"],
+    usage: "Растворить 1 пакетик в 50–100 мл воды и выпить. Принимать 1 раз в день утром натощак.",
+    dosage: [{ label: "Суточная доза", value: "1 пакетик" },{ label: "Форма", value: "Лиофилизат" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить в сухом месте при температуре от +3°С до +25°С. Восстановленный продукт хранению не подлежит.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 31,
+    name: "Лиофилизат Forte Original",
+    shortDesc: "Концентрат Forte — оригинальная формула",
+    category: "капсулы",
+    badge: "hit",
+    img: IMG("Лиофилизат_Forte_Original.png"),
+    tags: ["vegan","halal"],
+    emoji: "🧬",
+    description: "Лиофилизированная форма Vertera Forte с оригинальной формулой. Вся польза биогелей ламинарии, фукуса и дигидрокверцетина в концентрированном удобном формате.",
+    benefits: ["Антиоксидантная защита","Концентрированная польза","Ламинария и фукус","Дигидрокверцетин","Удобный формат"],
+    usage: "Растворить 1 пакетик в 100–150 мл воды. Принимать 1 раз в день утром натощак.",
+    dosage: [{ label: "Суточная доза", value: "1 пакетик" },{ label: "Форма", value: "Лиофилизат" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить в сухом месте при температуре от +3°С до +25°С. Восстановленный продукт хранению не подлежит.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 32,
+    name: "Лиофилизат AngioLive Original",
+    shortDesc: "Концентрат AngioLive для здоровья сосудов",
+    category: "капсулы",
+    badge: "hit",
+    img: IMG("Лиофилизат_AngioLive_Original.png"),
+    tags: ["vegan","halal","kosher"],
+    emoji: "❤️",
+    description: "Лиофилизированная форма AngioLive Original. Концентрированная польза для сосудов с биокомпонентами винограда, ламинарии и фукуса в удобном формате пакетиков.",
+    benefits: ["Здоровье сосудов","Концентрированная формула","Кардиопротекция","Антиоксидантная защита","Удобный формат"],
+    usage: "Растворить 1 пакетик в 100–150 мл воды. Принимать 1 раз в день за 30 минут до еды.",
+    dosage: [{ label: "Суточная доза", value: "1 пакетик" },{ label: "Форма", value: "Лиофилизат" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить в сухом месте при температуре от +3°С до +25°С. Восстановленный продукт хранению не подлежит.",
+    url: "https://vertera.org/ru/catalog"
+  },
+
+  // ─── КОЛЛАГЕН ─────────────────────────────
+  {
+    id: 33,
+    name: "Fish Collagen",
+    shortDesc: "Рыбий коллаген с гиалуроновой кислотой и витамином С",
+    category: "капсулы",
+    badge: "new",
+    img: IMG("Fish_Collagen_Рыбий_коллаген_с_гиалуроновой_кислотой_и_витамином_С.png"),
+    tags: [],
+    emoji: "🐟",
+    description: "Рыбий коллаген с гиалуроновой кислотой и витамином С от Vertera. Легкоусвояемый морской коллаген для здоровья кожи, волос, ногтей и суставов. Витамин С усиливает синтез собственного коллагена.",
+    benefits: ["Молодость кожи","Здоровье суставов","Крепкие волосы и ногти","Гиалуроновая кислота","Витамин С"],
+    usage: "Принимать 1 порцию в день, растворив в 200 мл воды или сока. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 порция" },{ label: "Курс", value: "30–60 дней" },{ label: "Форма", value: "Порошок" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре от +3°С до +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 34,
+    name: "Artroplast",
+    shortDesc: "Комплекс для здоровья суставов и хрящей",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Artroplast.png"),
+    tags: ["vegan"],
+    emoji: "🦴",
+    description: "Специализированный комплекс Artroplast для поддержки здоровья суставов, хрящевой и костной ткани. Содержит компоненты, способствующие восстановлению суставного хряща и уменьшению воспаления.",
+    benefits: ["Здоровье суставов","Восстановление хряща","Уменьшение воспаления","Поддержка костей","Подвижность суставов"],
+    usage: "Принимать по 2 капсулы 2 раза в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "4 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 35,
+    name: "Collagen + Vitamin C",
+    shortDesc: "Коллаген с витамином С для красоты и молодости",
+    category: "капсулы",
+    badge: "new",
+    img: IMG("Collagen_+_Vitamin_C.png"),
+    tags: ["vegan"],
+    emoji: "💎",
+    description: "Комплекс коллагена с витамином С для поддержания молодости и красоты. Витамин С необходим для синтеза коллагена — основного строительного материала кожи, суставов и сосудов.",
+    benefits: ["Синтез коллагена","Молодость кожи","Здоровье суставов","Витамин С","Антиоксидантная защита"],
+    usage: "Принимать по 1–2 капсулы в день во время еды, запивая водой.",
+    dosage: [{ label: "Суточная доза", value: "1–2 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+  {
+    id: 36,
+    name: "True Vision",
+    shortDesc: "Комплекс для здоровья зрения",
+    category: "капсулы",
+    badge: "",
+    img: IMG("True_Vision.png"),
+    tags: ["vegan"],
+    emoji: "👁️",
+    description: "Специализированный комплекс True Vision для поддержки здоровья зрения. Содержит лютеин, зеаксантин и другие компоненты, защищающие сетчатку глаза от повреждений.",
+    benefits: ["Здоровье зрения","Защита сетчатки","Лютеин и зеаксантин","Снижение усталости глаз","Профилактика катаракты"],
+    usage: "Принимать по 1 капсуле 1 раз в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog"
+  },
+
+  // ─── БУСТЕРЫ ─────────────────────────────
+  {
+    id: 37,
+    name: "BEAUTY BOOSTER",
+    shortDesc: "Коллаген, молодость кожи и anti-age защита",
+    category: "капсулы",
+    badge: "new",
+    img: IMG("BEAUTY_BOOSTER.png"),
+    tags: ["vegan"],
+    emoji: "💄",
+    description: "Beauty Booster от Vertera Lab разработан для быстрого увеличения естественной выработки коллагена. Эффективная anti-age защита, деликатная забота о здоровье кожи, волос и ногтей. Технология микрокапсулирования для максимального усвоения.",
+    benefits: ["Выработка коллагена","Anti-age защита","Здоровье кожи, волос, ногтей","Укрепление иммунитета","Здоровье суставов"],
+    usage: "Принимать по 1 саше в день, растворив в 150–200 мл воды. Во время или после еды.",
+    dosage: [{ label: "Суточная доза", value: "1 саше" },{ label: "Курс", value: "30–60 дней" },{ label: "Форма", value: "Саше" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить в оригинальной закрытой упаковке при температуре от +3°С до +25°С. После вскрытия — не более 3 недель.",
+    url: "https://vertera.org/ru/catalog/bustery"
+  },
+  {
+    id: 38,
+    name: "SLEEP&SLIM BOOSTER",
+    shortDesc: "Нормализация сна и контроль веса",
+    category: "капсулы",
+    badge: "",
+    img: IMG("SLEEP&SLIM_BOOSTER.png"),
+    tags: ["vegan"],
+    emoji: "🌙",
+    description: "Sleep&Slim Booster — уникальный бустер двойного действия. Нормализует сон, помогает расслабиться и одновременно поддерживает контроль веса за счёт ускорения ночного метаболизма.",
+    benefits: ["Здоровый сон","Контроль веса","Ночной метаболизм","Расслабление","Снижение стресса"],
+    usage: "Принимать 1 саше за 30–60 минут до сна, растворив в 150 мл тёплой воды.",
+    dosage: [{ label: "Суточная доза", value: "1 саше" },{ label: "Время приёма", value: "Перед сном" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить в сухом прохладном месте при температуре до +25°С. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bustery"
+  },
+  {
+    id: 39,
+    name: "SPORT&POWER BOOSTER",
+    shortDesc: "Энергия и выносливость для спортсменов",
+    category: "капсулы",
+    badge: "",
+    img: IMG("SPORT&POWER_BOOSTER.png"),
+    tags: ["vegan"],
+    emoji: "💪",
+    description: "Sport&Power Booster — бустер для активных людей и спортсменов. Повышает выносливость, ускоряет восстановление после тренировок, обеспечивает стабильную энергию без перепадов.",
+    benefits: ["Энергия и выносливость","Быстрое восстановление","Спортивные результаты","Без сахара","Натуральный состав"],
+    usage: "Принимать 1 саше за 30 минут до тренировки или в начале рабочего дня, растворив в 200 мл воды.",
+    dosage: [{ label: "Суточная доза", value: "1 саше" },{ label: "Время приёма", value: "До тренировки" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить в сухом прохладном месте при температуре до +25°С. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bustery"
+  },
+
+  // ─── КАПСУЛЫ / БАДы ───────────────────────
+  {
+    id: 40,
+    name: "Plasmax",
+    shortDesc: "Лиофилизат — биотехнология Plasma Technology",
+    category: "капсулы",
+    badge: "hit",
+    img: IMG("Plasmax.png"),
+    tags: ["vegan","halal"],
+    emoji: "🔬",
+    description: "Лиофилизированный гель из ламинарии, изготовленный с применением биотехнологии нового поколения Plasma Technology. Раскрывает огромный потенциал полисахаридов бурых морских водорослей для базового детокса с максимальной биодоступностью.",
+    benefits: ["Базовый детокс","Максимальная биодоступность","Plasma Technology","Полисахариды водорослей","Иммунная поддержка"],
+    usage: "Принимать по 2 капсулы 1 раз в день во время еды, запивая стаканом воды. Курс 1 месяц.",
+    dosage: [{ label: "Суточная доза", value: "2 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Не замораживать.",
+    url: "https://vertera.org/ru/product/plasmax"
+  },
+  {
+    id: 41,
+    name: "Antihelmix",
+    shortDesc: "Натуральный комплекс против паразитов",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Antihelmix.png"),
+    tags: ["vegan"],
+    emoji: "🛡️",
+    description: "Натуральный антипаразитарный комплекс Antihelmix на растительной основе. Помогает бороться с паразитами и глистами, восстанавливает микрофлору кишечника после антипаразитарного курса.",
+    benefits: ["Защита от паразитов","Очищение кишечника","Восстановление микрофлоры","Натуральный состав","Детокс"],
+    usage: "Принимать по 2 капсулы 2 раза в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "4 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+  {
+    id: 42,
+    name: "Hepanormix",
+    shortDesc: "Поддержка и восстановление печени",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Hepanormix.png"),
+    tags: ["vegan"],
+    emoji: "🫀",
+    description: "Hepanormix — натуральный гепатопротекторный комплекс для поддержки и восстановления функций печени. Содержит расторопшу, артишок и другие растительные компоненты для детоксикации печени.",
+    benefits: ["Защита печени","Детоксикация","Восстановление клеток печени","Улучшение желчеотделения","Натуральный состав"],
+    usage: "Принимать по 2 капсулы 2–3 раза в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "4–6 капсул" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+  {
+    id: 43,
+    name: "Arthronormix",
+    shortDesc: "Комплекс для суставов и позвоночника",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Arthronormix.png"),
+    tags: ["vegan"],
+    emoji: "🦴",
+    description: "Arthronormix — специализированный натуральный комплекс для здоровья суставов и позвоночника. Снижает воспаление, восстанавливает хрящевую ткань, улучшает подвижность.",
+    benefits: ["Здоровье суставов","Восстановление хряща","Снижение воспаления","Здоровье позвоночника","Улучшение подвижности"],
+    usage: "Принимать по 2 капсулы 2 раза в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "4 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+  {
+    id: 44,
+    name: "Visionormix",
+    shortDesc: "Натуральный комплекс для здоровья зрения",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Visionormix.png"),
+    tags: ["vegan"],
+    emoji: "👁️",
+    description: "Visionormix — натуральный комплекс для поддержки и улучшения зрения. Содержит лютеин, зеаксантин, черничный экстракт и витамины для защиты и питания зрительного аппарата.",
+    benefits: ["Улучшение зрения","Защита сетчатки","Лютеин и зеаксантин","Черничный экстракт","Снижение усталости глаз"],
+    usage: "Принимать по 1–2 капсулы в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1–2 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+  {
+    id: 45,
+    name: "Balancemix",
+    shortDesc: "Баланс гормонов и нервной системы",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Balancemix.png"),
+    tags: ["vegan"],
+    emoji: "⚖️",
+    description: "Balancemix — натуральный комплекс для нормализации гормонального баланса и поддержки нервной системы. Помогает справиться со стрессом, улучшает настроение и качество сна.",
+    benefits: ["Гормональный баланс","Нервная система","Антистресс","Улучшение сна","Стабилизация настроения"],
+    usage: "Принимать по 1–2 капсулы в день. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1–2 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+  {
+    id: 46,
+    name: "Cordyceps",
+    shortDesc: "Гриб кордицепс — энергия и иммунитет",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Cordyceps.png"),
+    tags: ["vegan"],
+    emoji: "🍄",
+    description: "Кордицепс — уникальный лечебный гриб, известный своими адаптогенными свойствами. Повышает выносливость, укрепляет иммунитет, улучшает работу лёгких и почек.",
+    benefits: ["Повышение выносливости","Укрепление иммунитета","Поддержка лёгких","Поддержка почек","Адаптогенный эффект"],
+    usage: "Принимать по 1–2 капсулы 1–2 раза в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "2–4 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/bady"
+  },
+
+  // ─── ВИТАМИНЫ ─────────────────────────────
+  {
+    id: 47,
+    name: "Zinc Picolinate",
+    shortDesc: "Цинк в биодоступной форме пиколинат",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Zinc_Picolinate.png"),
+    tags: ["vegan"],
+    emoji: "⚗️",
+    description: "Цинк в форме пиколината — самая биодоступная форма для максимального усвоения. Цинк необходим для иммунитета, здоровья кожи, синтеза белка и нормальной работы репродуктивной системы.",
+    benefits: ["Укрепление иммунитета","Здоровье кожи","Синтез белка","Репродуктивное здоровье","Максимальная биодоступность"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 48,
+    name: "Chromium Picolinate",
+    shortDesc: "Хром для контроля сахара и веса",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Chromium_Picolinate.png"),
+    tags: ["vegan"],
+    emoji: "⚗️",
+    description: "Хром пиколинат в биодоступной форме. Хром регулирует уровень сахара в крови, снижает тягу к сладкому, поддерживает нормальный вес и участвует в углеводном обмене.",
+    benefits: ["Контроль сахара","Снижение тяги к сладкому","Контроль веса","Углеводный обмен","Биодоступная форма"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 18 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 49,
+    name: "Vitamin C",
+    shortDesc: "Витамин С — антиоксидант и иммунитет",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Vitamin_C.png"),
+    tags: ["vegan"],
+    emoji: "🍊",
+    description: "Витамин С (аскорбиновая кислота) в оптимальной дозировке. Мощный антиоксидант, необходимый для иммунитета, синтеза коллагена, усвоения железа и защиты клеток от повреждений.",
+    benefits: ["Крепкий иммунитет","Синтез коллагена","Мощный антиоксидант","Усвоение железа","Защита клеток"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 50,
+    name: "Magnesium B6",
+    shortDesc: "Магний с витамином В6 для нервов и мышц",
+    category: "капсулы",
+    badge: "",
+    img: IMG("Magnesium_B6.png"),
+    tags: ["vegan"],
+    emoji: "⚡",
+    description: "Магний в сочетании с витамином В6. Незаменимый минерал для работы нервной системы, мышц и сердца. Снижает стресс, улучшает сон, снимает мышечные судороги.",
+    benefits: ["Нервная система","Здоровье мышц","Снижение стресса","Качество сна","Здоровье сердца"],
+    usage: "Принимать по 1–2 капсулы в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "1–2 капсулы" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 51,
+    name: "Organic Iodine",
+    shortDesc: "Органический йод из ламинарии",
+    category: "капсулы",
+    badge: "new",
+    img: IMG("Organic_Iodine.png"),
+    tags: ["vegan","halal"],
+    emoji: "🌊",
+    description: "Органический йод из ламинарии — самая натуральная и безопасная форма йода. Необходим для нормальной работы щитовидной железы, энергетического обмена и умственной активности.",
+    benefits: ["Щитовидная железа","Энергетический обмен","Умственная активность","Органическая форма","Натуральный источник"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Источник", value: "Ламинария" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 52,
+    name: "Iron Bisglycinate",
+    shortDesc: "Железо в хелатной форме — максимальное усвоение",
+    category: "капсулы",
+    badge: "new",
+    img: IMG("Iron_Bisglycinate.png"),
+    tags: ["vegan"],
+    emoji: "🩸",
+    description: "Железо бисглицинат — хелатная форма железа с максимальной биодоступностью и минимальными побочными эффектами. Борется с дефицитом железа, анемией, хронической усталостью.",
+    benefits: ["Борьба с анемией","Максимальное усвоение","Хронический усталость","Без побочных эффектов","Хелатная форма"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30–60 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–60 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+  {
+    id: 53,
+    name: "D3+K2 Complex",
+    shortDesc: "Витамин D3 с К2 для костей и иммунитета",
+    category: "капсулы",
+    badge: "",
+    img: IMG("D3+K2_Complex.png"),
+    tags: ["vegan"],
+    emoji: "☀️",
+    description: "Синергетический комплекс витаминов D3 и K2. Витамин D3 необходим для иммунитета и усвоения кальция, витамин К2 направляет кальций в кости, предотвращая его отложение в сосудах.",
+    benefits: ["Крепкие кости","Иммунитет","Усвоение кальция","Здоровье сосудов","Синергетический эффект"],
+    usage: "Принимать по 1 капсуле в день во время еды. Курс 30–90 дней.",
+    dosage: [{ label: "Суточная доза", value: "1 капсула" },{ label: "Форма", value: "Капсулы" },{ label: "Курс", value: "30–90 дней" },{ label: "Возраст", value: "С 14 лет" }],
+    storage: "Хранить при температуре не выше +25°С в сухом, тёмном месте. Беречь от детей.",
+    url: "https://vertera.org/ru/catalog/vertera-lab"
+  },
+];
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let currentCat = "all";
+let searchQuery = "";
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function getBadgeHTML(badge) {
+  if (!badge) return "";
+  const labels = { hit: "Хит", new: "Новинка" };
+  return `<div class="card-badge ${badge}">${labels[badge]}</div>`;
+}
+
+function getTagsHTML(tags) {
+  return tags.map(t => {
+    const labels = { vegan: "🌱 Vegan", halal: "☪️ Halal", kosher: "✡️ Kosher" };
+    return `<span class="tag ${t}">${labels[t]}</span>`;
+  }).join("");
+}
+
+function renderGrid() {
+  const grid = document.getElementById("productsGrid");
+  const noResults = document.getElementById("noResults");
+  const countBadge = document.getElementById("countBadge");
+
+  let filtered = PRODUCTS;
+  if (currentCat !== "all") filtered = filtered.filter(p => p.category === currentCat);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.shortDesc.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.benefits.some(b => b.toLowerCase().includes(q))
+    );
+  }
+
+  countBadge.textContent = filtered.length;
+
+  if (!filtered.length) {
+    grid.innerHTML = "";
+    noResults.style.display = "block";
+    return;
+  }
+  noResults.style.display = "none";
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card" onclick="openProduct(${p.id})">
+      <div class="card-img-wrap">
+        ${getBadgeHTML(p.badge)}
+        <img class="card-img" src="${p.img}" alt="${p.name}"
+          onerror="this.style.display='none';this.nextSibling.nextSibling && (this.nextSibling.nextSibling.style.display='flex')"
+          onload="this.style.display='block'"
+          style="display:block"
+        />
+        <div class="card-img-placeholder" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-size:52px">${p.emoji}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.shortDesc}</div>
+        <div class="card-arrow">Подробнее <span>→</span></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+// ══════════════════════════════════════════════
+//  OPEN PRODUCT DETAIL
+// ══════════════════════════════════════════════
+function openProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  const dosageHTML = p.dosage.map(d => `
+    <div class="dosage-item">
+      <div class="dosage-label">${d.label}</div>
+      <div class="dosage-val">${d.value}</div>
+    </div>
+  `).join("");
+
+  const benefitsHTML = p.benefits.map(b => `<li>${b}</li>`).join("");
+
+  document.getElementById("sheetInner").innerHTML = `
+    <div class="sheet-img-wrap">
+      <img class="sheet-img" src="${p.img}" alt="${p.name}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+      />
+      <div class="sheet-img-placeholder" style="display:none">${p.emoji}</div>
+    </div>
+    <div class="sheet-content">
+      <div class="sheet-category">🌿 ${p.category}</div>
+      <div class="sheet-title">${p.name}</div>
+      <div class="sheet-subtitle">${p.shortDesc}</div>
+      <div class="tags-row">${getTagsHTML(p.tags)}</div>
+
+      <div class="info-block">
+        <div class="info-block-title">📋 О продукте</div>
+        <div class="info-block-text">${p.description}</div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-title">✅ Польза</div>
+        <div class="info-block-text"><ul>${benefitsHTML}</ul></div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-title">💊 Способ применения</div>
+        <div class="info-block-text">${p.usage}</div>
+        <div class="dosage-grid">${dosageHTML}</div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-title">📦 Условия хранения</div>
+        <div class="info-block-text">${p.storage}</div>
+      </div>
+
+      <a class="sheet-link" href="${p.url}" target="_blank">
+        🛒 Открыть на сайте Vertera
+      </a>
+    </div>
+  `;
+
+  document.getElementById("overlay").classList.add("show");
+  setTimeout(() => document.getElementById("detailSheet").classList.add("open"), 10);
+  document.body.style.overflow = "hidden";
+
+  // Telegram back button
+  if (window.Telegram?.WebApp?.BackButton) {
+    Telegram.WebApp.BackButton.show();
+    Telegram.WebApp.BackButton.onClick(closeSheet);
+  }
+}
+
+function closeSheet() {
+  document.getElementById("detailSheet").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+  document.body.style.overflow = "";
+  if (window.Telegram?.WebApp?.BackButton) {
+    Telegram.WebApp.BackButton.hide();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════════
+const searchInput = document.getElementById("searchInput");
+const searchClear = document.getElementById("searchClear");
+
+searchInput.addEventListener("input", () => {
+  searchQuery = searchInput.value.trim();
+  searchClear.style.display = searchQuery ? "block" : "none";
+  renderGrid();
+});
+
+function clearSearch() {
+  searchInput.value = "";
+  searchQuery = "";
+  searchClear.style.display = "none";
+  searchInput.focus();
+  renderGrid();
+}
+
+// ══════════════════════════════════════════════
+//  CATEGORY TABS
+// ══════════════════════════════════════════════
+document.querySelectorAll(".cat-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentCat = tab.dataset.cat;
+    renderGrid();
+  });
+});
+
+// ══════════════════════════════════════════════
+//  TELEGRAM WEB APP INIT
+// ══════════════════════════════════════════════
+if (window.Telegram?.WebApp) {
+  const tg = Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  // Apply Telegram theme colors if dark
+  if (tg.colorScheme === "dark") {
+    document.documentElement.style.setProperty("--bg", "#1a1a2e");
+    document.documentElement.style.setProperty("--card-bg", "#16213e");
+    document.documentElement.style.setProperty("--text", "#e8f5ee");
+    document.documentElement.style.setProperty("--text-muted", "#7a9e8e");
+    document.documentElement.style.setProperty("--shadow", "0 4px 20px rgba(0,0,0,0.3)");
+  }
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+renderGrid();
+</script>
+</body>
+</html>
