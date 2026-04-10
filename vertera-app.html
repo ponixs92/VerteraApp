@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Vertera Uzbekistan</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#2d8a5e;--accent2:#1a5c3a;--bg:#f0f7f4;--card:#ffffff;--text:#1a1a2e;--muted:#6b7c76;--r:16px;--sh:0 2px 14px rgba(45,138,94,0.10);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;overflow-x:hidden;background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#1a5c3a 0%,#2d8a5e 60%,#3db876 100%);padding:14px 14px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(45,138,94,0.3);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;}
+.logo-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
+.logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}
+.logo-text{font-family:'Raleway',sans-serif;font-weight:800;font-size:20px;color:#fff;letter-spacing:1px;line-height:1.1;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,0.75);letter-spacing:1.5px;text-transform:uppercase;}
+.lang-sw{display:flex;gap:3px;background:rgba(255,255,255,0.18);border-radius:20px;padding:3px;flex-shrink:0;}
+.lang-btn{padding:4px 11px;border-radius:16px;border:none;background:transparent;color:rgba(255,255,255,0.8);font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;letter-spacing:0.5px;}
+.lang-btn.active{background:#fff;color:var(--accent);}
+.search-wrap{position:relative;}
+.search-in{width:100%;padding:11px 38px 11px 38px;border-radius:50px;border:none;background:rgba(255,255,255,0.95);font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);outline:none;}
+.search-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;opacity:0.4;pointer-events:none;}
+.search-clr{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0.5;cursor:pointer;display:none;background:none;border:none;padding:4px;color:var(--text);}
+
+/* CATEGORIES */
+.cats{overflow-x:auto;padding:10px 12px 0;display:flex;gap:7px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.cats::-webkit-scrollbar{display:none;}
+.cat{white-space:nowrap;padding:6px 14px;border-radius:50px;border:1.5px solid #c8e6d4;background:#fff;font-size:13px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.cat.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* GRID */
+.grid-sec{padding:12px 10px 90px;}
+.sec-title{font-family:'Raleway',sans-serif;font-weight:700;font-size:16px;color:var(--text);margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px;}
+.cnt-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:50px;margin-left:auto;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:transform .18s;border:1px solid rgba(45,138,94,0.07);display:flex;flex-direction:column;}
+.card:active{transform:scale(0.97);}
+.card-img-wrap{position:relative;width:100%;padding-bottom:70%;background:#edf7f2;overflow:hidden;flex-shrink:0;}
+.card-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:8px;}
+.card-placeholder{position:absolute;inset:0;font-size:40px;display:none;align-items:center;justify-content:center;background:#edf7f2;}
+.card-badge{position:absolute;top:6px;left:6px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px;text-transform:uppercase;z-index:2;}
+.card-badge.new{background:#e74c3c;}
+.card-badge.hit{background:#f39c12;}
+.card-body{padding:9px 10px 10px;flex:1;display:flex;flex-direction:column;background:#fff;}
+.card-name{font-family:'Raleway',sans-serif;font-weight:700;font-size:13px;line-height:1.3;color:#1a1a2e;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card-desc{font-size:11px;color:#6b7c76;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card-price{font-family:'Raleway',sans-serif;font-weight:800;font-size:12px;color:var(--accent);margin-top:5px;}
+.card-arrow{display:flex;align-items:center;justify-content:flex-end;margin-top:auto;padding-top:5px;color:var(--accent);font-size:11px;font-weight:700;}
+
+/* NO RESULTS */
+.no-res{text-align:center;padding:60px 20px;color:var(--muted);display:none;}
+.no-res-ico{font-size:48px;margin-bottom:12px;}
+
+/* OVERLAY + SHEET */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;}
+.overlay.show{display:block;}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;z-index:300;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);scrollbar-width:none;padding-bottom:40px;}
+.sheet::-webkit-scrollbar{display:none;}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:#d0d8d4;border-radius:2px;margin:12px auto 0;}
+.sheet-close{position:absolute;top:12px;right:14px;width:30px;height:30px;background:#f0f4f2;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:14px;color:#666;}
+.sheet-img-wrap{width:100%;height:220px;background:#edf7f2;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:6px;}
+.sheet-img{width:100%;height:100%;object-fit:contain;padding:16px;}
+.sheet-img-ph{font-size:70px;opacity:0.3;}
+.sheet-content{padding:16px 16px 0;}
+.sheet-cat{display:inline-flex;align-items:center;gap:5px;background:#e2f4ec;color:var(--accent);font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.7px;}
+.sheet-title{font-family:'Raleway',sans-serif;font-weight:800;font-size:21px;line-height:1.2;color:#1a1a2e;margin-bottom:4px;}
+.sheet-price-line{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.sheet-price{font-family:'Raleway',sans-serif;font-weight:800;font-size:18px;color:var(--accent);}
+.sheet-pv{font-size:12px;color:var(--muted);background:#f0f7f4;padding:3px 9px;border-radius:50px;}
+.sheet-sub{font-size:13px;color:#6b7c76;line-height:1.5;margin-bottom:14px;}
+.tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.tag{background:#e2f4ec;color:var(--accent);font-size:11px;font-weight:600;padding:4px 10px;border-radius:50px;}
+.tag.halal{background:#fff3e0;color:#c07000;}
+.tag.kosher{background:#e8eaf6;color:#3949ab;}
+
+/* INFO BLOCKS */
+.info-block{background:#f5fbf7;border-radius:14px;padding:14px;margin-bottom:10px;border-left:3px solid var(--accent);}
+.info-title{font-family:'Raleway',sans-serif;font-weight:700;font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.info-text{font-size:13px;line-height:1.65;color:#1a1a2e;}
+.info-text ul{padding-left:0;margin-top:6px;list-style:none;}
+.info-text li{margin-bottom:8px;padding-left:0;}
+.info-text li strong{color:#1a1a2e;font-weight:700;}
+.ingr-item{margin-bottom:10px;padding:10px 12px;background:#fff;border-radius:10px;border:1px solid #d4e9df;}
+.ingr-name{font-weight:700;font-size:13px;color:var(--accent2);margin-bottom:3px;}
+.ingr-desc{font-size:12.5px;color:#1a1a2e;line-height:1.55;}
+
+/* DOSAGE */
+.dosage-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;}
+.dosage-item{background:#fff;border-radius:10px;padding:8px 10px;border:1px solid #c8e6d4;}
+.dosage-lbl{font-size:9px;color:#6b7c76;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:2px;}
+.dosage-val{font-weight:700;font-size:12px;color:#1a1a2e;}
+
+/* CERT BADGES */
+.cert-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.cert-badge{background:#e2f4ec;color:var(--accent2);font-size:10px;font-weight:700;padding:3px 9px;border-radius:50px;border:1px solid #b8ddd0;}
+
+/* REGISTER BTN */
+.reg-btn{display:block;margin:14px 0 0;background:linear-gradient(135deg,#1a5c3a,#2d8a5e);color:#fff;text-align:center;padding:15px;border-radius:14px;text-decoration:none;font-family:'Raleway',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(45,138,94,0.35);}
+.reg-btn:active{opacity:0.85;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo-wrap">
+      <div class="logo-icon">🌿</div>
+      <div>
+        <div class="logo-text">VERTERA</div>
+        <div class="logo-sub" id="logoSub">Справочник продуктов</div>
+      </div>
+    </div>
+    <div class="lang-sw">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('uz')">UZ</button>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-ico">🔍</span>
+    <input class="search-in" type="text" id="searchInput" placeholder="Найти продукт..." autocomplete="off"/>
+    <button class="search-clr" id="searchClr" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<div class="cats" id="catsRow">
+  <div class="cat active" data-cat="all">Все</div>
+  <div class="cat" data-cat="гели">Гели</div>
+  <div class="cat" data-cat="капсулы">Капсулы/БАДы</div>
+  <div class="cat" data-cat="косметика">Косметика</div>
+</div>
+
+<div class="grid-sec">
+  <div class="sec-title">
+    <span id="catTitle">Каталог</span>
+    <div class="cnt-badge" id="cntBadge">13</div>
+  </div>
+  <div class="grid" id="productsGrid"></div>
+  <div class="no-res" id="noRes">
+    <div class="no-res-ico">🌿</div>
+    <h3 id="noResTitle">Ничего не найдено</h3>
+    <p id="noResSub">Попробуйте другой запрос</p>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" onclick="closeSheet()">✕</button>
+  <div id="sheetInner"></div>
+</div>
+
+<script>
+// ══════════════════════════════
+// LANGUAGE
+// ══════════════════════════════
+const LANG = {
+  ru:{
+    logoSub:"Справочник продуктов",search:"Найти продукт...",catAll:"Все",catGels:"Гели",
+    catCaps:"Капсулы/БАДы",catCosm:"Косметика",catalog:"Каталог",more:"Подробнее →",
+    about:"📋 О продукте",ingr:"🧪 Состав и действие",benefits:"✅ Польза",
+    usage:"💊 Применение",storage:"📦 Хранение",regBtn:"📝 Оставить заявку на регистрацию",
+    noRes:"Ничего не найдено",noResSub:"Попробуйте другой запрос",pv:"PV",price:"Цена",
+    contraind:"⚠️ Противопоказания",certs:"🏆 Сертификаты"
+  },
+  uz:{
+    logoSub:"Mahsulotlar ma'lumotnomasi",search:"Mahsulot qidirish...",catAll:"Barchasi",
+    catGels:"Gellar",catCaps:"Kapsulalar/BAD",catCosm:"Kosmetika",catalog:"Katalog",
+    more:"Batafsil →",about:"📋 Mahsulot haqida",ingr:"🧪 Tarkib va ta'siri",
+    benefits:"✅ Foydasi",usage:"💊 Qo'llash",storage:"📦 Saqlash",
+    regBtn:"📝 Ro'yxatdan o'tish uchun ariza",noRes:"Hech narsa topilmadi",
+    noResSub:"Boshqa so'rov kiriting",pv:"PV",price:"Narx",
+    contraind:"⚠️ Qarshi ko'rsatmalar",certs:"🏆 Sertifikatlar"
+  }
+};
+let currentLang = "ru";
+
+function setLang(l){
+  currentLang = l;
+  const L = LANG[l];
+  document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
+  document.getElementById("logoSub").textContent = L.logoSub;
+  document.getElementById("searchInput").placeholder = L.search;
+  document.getElementById("catTitle").textContent = L.catalog;
+  document.getElementById("noResTitle").textContent = L.noRes;
+  document.getElementById("noResSub").textContent = L.noResSub;
+  const catLabels = [L.catAll,L.catGels,L.catCaps,L.catCosm];
+  document.querySelectorAll(".cat").forEach((c,i)=>{ if(catLabels[i]) c.textContent=catLabels[i]; });
+  renderGrid();
+}
+
+// ══════════════════════════════
+// PRODUCTS
+// ══════════════════════════════
+const IMG = f => f;
+
+const PRODUCTS = [
+  {
+    id:1, name:"AngioLive «Яблоко»", name_uz:"AngioLive «Olma»",
+    short:"Здоровье сосудов — кверцетин, ресвератрол, фукоиданы", short_uz:"Qon tomir salomatligi — kvertsetin, resveratrol, fukoidanlar",
+    cat:"гели", badge:"", img:IMG("AngioLive_«Яблоко».jpg"), emoji:"❤️",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Госрегистрация ЕАЭС"],
+    description:`Биоактивная основа линейки AngioLive Food — кверцетин, ресвератрол и фукоиданы, которые активно используются в фармацевтике. Гармония природных ингредиентов AngioLive восполняет дефицит необходимых веществ в организме, положительно влияет на качество крови и укрепляет клетки эндотелиального слоя сосудов.
+
+• Источник йода, фукоиданов и кверцетина.
+• Профилактика заболеваний сосудов.
+• Комплекс полезных веществ ламинарии и фукуса.
+• Яркий вкус спелых фруктов (яблоко, вишня, черная смородина).`,
+    description_uz:`AngioLive Food liniyasining bioaktiv asosi — farmatsevtikada faol qo'llaniladigan kvertsetin, resveratrol va fukoidanlar. AngioLive tabiiy ingredientlarining uyg'unligi organizmda zarur moddalar tanqisligini to'ldiradi, qon sifatiga ijobiy ta'sir qiladi va qon tomir endotelial qatlami hujayralarini mustahkamlaydi.
+
+• Yod, fukoidanlar va kvertsetin manbai.
+• Qon tomir kasalliklarining oldini olish.
+• Laminaria va fukusning foydali moddalari kompleksi.
+• Pishgan meva yoqimli ta'mi (olma, gilos, qora smorodina).`,
+    ingredients:[
+      {name:"Комплекс экстрактов винограда и листьев красного винограда", name_uz:"Uzum va qizil uzum bargi ekstraktlari kompleksi",
+       desc:"Является источником кверцетина и ресвератрола — биофлавоноидов, поддерживающих здоровье сосудов. Укрепляет стенки капилляров, снижает их проницаемость и защищает от разрушения.",
+       desc_uz:"Kapillyar devorlarini mustahkamlaydigan kvertsetin va resveratrol manbai. Qon tomir devorlarini ichkaridan himoya qiladi."},
+      {name:"Кверцетин", name_uz:"Kvertsetin",
+       desc:"Мощный природный антиоксидант — перехватывает свободные радикалы до того, как они успевают повредить клетки сосудов. Улучшает микроциркуляцию и снижает риск атеросклероза.",
+       desc_uz:"Kuchli tabiiy antioksidant — erkin radikallarni ushlab, qon tomir hujayralarini himoya qiladi."},
+      {name:"Ресвератрол", name_uz:"Resveratrol",
+       desc:"Повышает эластичность стенок сосудов, препятствует слипанию тромбоцитов и улучшает кровообращение на уровне мельчайших капилляров.",
+       desc_uz:"Qon tomir devorlarini elastik qiladi, trombotsitlarning yopishishiga to'sqinlik qiladi."},
+      {name:"Фукоиданы (из фукуса)", name_uz:"Fukus fukoidanlari",
+       desc:"Препятствуют образованию тромбов, снижают уровень холестерина в крови, борются с воспалением в стенках сосудов.",
+       desc_uz:"Qon ivishiga to'sqinlik qiladi, xolesterin darajasini kamaytiradi va qon tomir devorlaridagi yallig'lanishga qarshi kurashadi."},
+      {name:"Клеточный гель ламинарии", name_uz:"Laminaria hujayraviy geli",
+       desc:"Оказывает антисклеротическое и противовоспалительное действие, альгинаты снижают вязкость крови. Поставляет органический йод, необходимый щитовидной железе.",
+       desc_uz:"Aterosklerozga qarshi ta'sir, alginatlar qon qovushqoqligini kamaytiradi. Organik yod manbai."},
+    ],
+    benefits:["Источник йода, фукоиданов и кверцетина","Профилактика заболеваний сосудов","Снижает вязкость крови","Антисклеротическое действие","Укрепляет эндотелий сосудов"],
+    benefits_uz:["Yod, fukoidanlar va kvertsetin manbai","Qon tomir kasalliklarining oldini olish","Qon qovushqoqligini kamaytiradi","Aterosklerozga qarshi ta'sir","Qon tomir endoteliyini mustahkamlaydi"],
+    usage:"Взрослым принимать по 2 столовых ложки (45 г) 2 раза в день за 30 минут до еды. Рекомендуется смешивать с соком. Курс 1 месяц. Противопоказания: состояния при которых противопоказаны препараты йода; индивидуальная непереносимость.",
+    usage_uz:"Kattalarga ovqatdan 30 daqiqa oldin kuniga 2 marta 2 osh qoshiq (45 g) qabul qiling. Sharbat bilan aralashtirib ichish tavsiya etiladi. Kurs 1 oy. Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C в сухом, защищённом от света месте. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha quruq, yorug'likdan himoyalangan joyda saqlang. Yaroqlilik muddati 6 oy. Ochilgandan so'ng 21 kun ichida iste'mol qiling.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"580 г"},{l:"Курс",v:"1 месяц"},{l:"Возраст",v:"С 18 лет"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"580 g"},{l:"Kurs",v:"1 oy"},{l:"Yosh",v:"18 yoshdan"}],
+  },
+  {
+    id:2, name:"AngioLive PRO-MAX", name_uz:"AngioLive PRO-MAX",
+    short:"Доказанный лечебный эффект. Поддержка работы печени.", short_uz:"Isbotlangan davolash effekti. Jigar funksiyasini qo'llab-quvvatlash.",
+    cat:"гели", badge:"hit", img:IMG("AngioLive_Original.jpg"), emoji:"💪",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Госрегистрация ЕАЭС"],
+    description:`Продукты серии AngioLive — отличное средство для поддержания результатов после курса приема венотоников или между ними. Они содержат максимум полезных веществ виноградной лозы, ламинарии и фукуса для здоровья ваших сосудов.
+
+AngioLive Original незаменим для:
+• укрепления и защиты сосудов;
+• снижения последствий сидячего образа жизни, повышенных нагрузок;
+• употребления при патологиях сердечно-сосудистой системы и печени, хронических заболеваниях вен.
+
+AngioLive Original содержит фукоиданы, которые препятствуют образованию тромбов, способствуют снижению уровня холестерина в крови, борются с воспалениями. Кверцетин и ресвератрол улучшают кровообращение на уровне микроциркуляции, повышают эластичность стенок сосудов.`,
+    description_uz:`AngioLive seriyasi mahsulotlari — venotoniklar kursidan keyin yoki ular orasida natijalarni saqlash uchun ajoyib vosita. Ular qon tomirlaringiz salomatligi uchun uzum novdasi, laminaria va fukusning foydali moddalarini maksimal darajada o'z ichiga oladi.
+
+AngioLive Original uchun muqarrar:
+• qon tomirlarini mustahkamlash va himoya qilish;
+• o'troq turmush tarzi, oshirilgan yuklamalar oqibatlarini kamaytirish;
+• yurak-qon tomir tizimi va jigar patologiyalarida, venalarning surunkali kasalliklarida foydalanish.`,
+    ingredients:[
+      {name:"Фукоиданы (повышенная концентрация)", name_uz:"Fukoidanlar (yuqori konsentratsiya)",
+       desc:"Препятствуют образованию тромбов — блокируют патологическое слипание тромбоцитов. Снижают уровень холестерина в крови, борются с воспалениями в стенках сосудов.",
+       desc_uz:"Trombotsitlarning patologik yopishishini bloklab, qon ivishiga to'sqinlik qiladi. Xolesterin darajasini kamaytiradi."},
+      {name:"Кверцетин и ресвератрол", name_uz:"Kvertsetin va resveratrol",
+       desc:"Улучшают кровообращение на уровне микроциркуляции, повышают эластичность стенок сосудов. Восстанавливают повреждённые стенки вен и капилляров.",
+       desc_uz:"Mikrosirkulyatsiya darajasida qon aylanishini yaxshilaydi, qon tomir devorlarining elastikligini oshiradi."},
+      {name:"Клеточный гель ламинарии и фукуса", name_uz:"Laminaria va fukus hujayraviy geli",
+       desc:"Содержит максимум полезных веществ виноградной лозы, ламинарии и фукуса для здоровья сосудов. Поддерживает работу печени.",
+       desc_uz:"Qon tomir salomatligi uchun foydali moddalarning maksimal miqdorini o'z ichiga oladi. Jigar funksiyasini qo'llab-quvvatlaydi."},
+    ],
+    benefits:["Укрепление и защита сосудов","Профилактика тромбозов","Снижение уровня холестерина","Поддержка работы печени","Улучшение микроциркуляции","Повышение эластичности сосудов"],
+    benefits_uz:["Qon tomirlarini mustahkamlash va himoya","Tromboz profilaktikasi","Xolesterin darajasini kamaytirish","Jigar funksiyasini qo'llab-quvvatlash","Mikrosirkulyatsiyani yaxshilash","Qon tomir elastikligini oshirish"],
+    usage:"Взрослым принимать по 2 столовых ложки без верха (45 г) 2 раза в день за 30 минут до еды. Рекомендуется смешивать с соком. Курс 1 месяц. Противопоказания: состояния при которых противопоказаны препараты йода; индивидуальная непереносимость.",
+    usage_uz:"Kattalarga ovqatdan 30 daqiqa oldin kuniga 2 marta 2 osh qoshiq (45 g) qabul qiling. Kurs 1 oy. Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C в сухом, защищённом от света месте. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha saqlang. 6 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"580 г"},{l:"Курс",v:"1 месяц"},{l:"Возраст",v:"С 18 лет"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"580 g"},{l:"Kurs",v:"1 oy"},{l:"Yosh",v:"18 yoshdan"}],
+  },
+  {
+    id:3, name:"Vertera Sensation", name_uz:"Vertera Sensation",
+    short:"8 натуральных активаторов иммунитета — 90 таблеток", short_uz:"8 tabiiy immunitet aktivatori — 90 tabletka",
+    cat:"капсулы", badge:"", img:IMG("Vertera_Sensation.png"), emoji:"✨",
+    price:"680 000 сум", price_uz:"680 000 so'm", pv:"10",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Госрегистрация ЕАЭС","Разрешение МЗ Узбекистана","Сан-эпид заключение Ташкент"],
+    description:`Vertera Sensation — результат многолетних научных исследований комплексного воздействия натуральных биокомпонентов на организм человека.
+
+• Способствует укреплению иммунитета.
+• Защита клеток от оксидативного стресса.
+• Активизация энергетического обмена.
+• Замедляет процессы старения.
+
+При производстве Vertera Sensation используется технология микрокапсулирования.`,
+    description_uz:`Vertera Sensation — tabiiy biokomponentlarning organizmga kompleks ta'sirini ko'p yillik ilmiy tadqiqotlar natijasidir.
+
+• Immunitetni mustahkamlashga yordam beradi.
+• Hujayralarni oksidativ stressdan himoya qiladi.
+• Energiya almashinuvini faollashtiradi.
+• Qarishi jarayonlarini sekinlashtiradi.
+
+Vertera Sensation ishlab chiqarishda mikrokapsulalash texnologiyasi qo'llaniladi.`,
+    ingredients:[
+      {name:"Ламинария", name_uz:"Laminaria",
+       desc:"Источник йода и более 140 необходимых для организма витаминов, минералов, микро- и макроэлементов.",
+       desc_uz:"Yod va organizmga zarur 140 dan ortiq vitaminlar, minerallar, mikro- va makroelementlar manbai."},
+      {name:"Фукус", name_uz:"Fukus",
+       desc:"Богат фукоиданом, благотворно влияющим на сердце и сосуды.",
+       desc_uz:"Yurak va qon tomirlariga foydali ta'sir ko'rsatuvchi fukoidanga boy."},
+      {name:"Спирулина", name_uz:"Spirulina",
+       desc:"Содержит 20 незаменимых аминокислот.",
+       desc_uz:"20 ta almashinmas aminokislotani o'z ichiga oladi."},
+      {name:"Экстракт чёрного тмина", name_uz:"Qora zira ekstrakti",
+       desc:"Природный энергетик и антиоксидант.",
+       desc_uz:"Tabiiy energetik va antioksidant."},
+      {name:"Бетулин", name_uz:"Betulin",
+       desc:"Естественный антибиотик с противовоспалительными свойствами.",
+       desc_uz:"Yallig'lanishga qarshi xususiyatlarga ega tabiiy antibiotik."},
+      {name:"Дигидрокверцетин", name_uz:"Digidrokvertsetin",
+       desc:"Натуральный антиоксидант, защищающий клетки от повреждений свободными радикалами.",
+       desc_uz:"Hujayralarni erkin radikallar zararlanishidan himoya qiluvchi tabiiy antioksidant."},
+      {name:"Астаксантин", name_uz:"Astaksantin",
+       desc:"Мощный антиоксидант, защищающий от последствий вредных привычек и плохой экологии.",
+       desc_uz:"Zararli odatlar va yomon ekologiya oqibatlaridan himoya qiluvchi kuchli antioksidant."},
+      {name:"Арабиногалактан", name_uz:"Arabinogalaktan",
+       desc:"Пребиотик и иммуностимулятор. Обеспечивает лёгкое и быстрое усвоение питательных веществ.",
+       desc_uz:"Prebiotik va immunostimulyator. Oziq moddalarning oson va tez so'rilishini ta'minlaydi."},
+    ],
+    benefits:["Укрепление иммунитета","Защита клеток от оксидативного стресса","Активизация энергетического обмена","Замедление процессов старения","Технология микрокапсулирования"],
+    benefits_uz:["Immunitetni mustahkamlash","Hujayralarni oksidativ stressdan himoya","Energiya almashinuvini faollashtirish","Qarishi jarayonlarini sekinlashtirish","Mikrokapsulalash texnologiyasi"],
+    usage:"Взрослым принимать по 1 таблетке 3 раза в день во время еды. Курс 30 дней. Противопоказания: состояния при которых противопоказаны препараты йода; беременность; кормление грудью.",
+    usage_uz:"Kattalarga ovqat paytida kuniga 3 marta 1 tabletka qabul qiling. Kurs 30 kun. Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; homiladorlik; emizish.",
+    storage:"Хранить при температуре +5°C до +18°C при влажности не более 75%. Срок годности 24 месяца.",
+    storage_uz:"+5°C dan +18°C gacha, namlik 75% dan oshmasin. 24 oy.",
+    dosage:[{l:"Доза",v:"1 табл. × 3 р/день"},{l:"Форма",v:"90 таблеток"},{l:"Курс",v:"30 дней"},{l:"Возраст",v:"С 18 лет"}],
+    dosage_uz:[{l:"Doza",v:"1 tabl. × 3 marta/kun"},{l:"Shakl",v:"90 tabletka"},{l:"Kurs",v:"30 kun"},{l:"Yosh",v:"18 yoshdan"}],
+  },
+  {
+    id:4, name:"Морской мёд", name_uz:"Dengiz asali",
+    short:"Пищевой продукт — гель с мёдом, прополисом и пергой", short_uz:"Oziq-ovqat mahsuloti — asal, propolis va perga bilan gel",
+    cat:"гели", badge:"", img:IMG("sea_honey.jpg"), emoji:"🍯",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["halal"],
+    certs:["Halal","ISO 22000","Декларация ЕАЭС (не БАД — пищевой продукт)"],
+    description:`Морским мёдом называют потому, что его гелевая основа — это ламинария и фукус, морские водоросли, которые обеспечивают ваш организм:
+
+• витаминами А, Е, С и РР — антиоксидантами и активными метаболитами;
+• альгинатами и фукоиданами, снижающими риск инфаркта;
+• йодом, нужным для работы щитовидной железы;
+• всеми необходимыми микро- и макроэлементами;
+• аминокислотами, из которых строятся все белки организма;
+• омега-3 жирными кислотами, помогающими предотвратить атеросклероз.
+
+Кому необходим морской мёд:
+• борьба с последствиями хронических стрессов;
+• профилактика простудных и инфекционных заболеваний;
+• улучшение работы пищеварительной системы и очистки кишечника;
+• поддержка функций сердца и сосудов с профилактикой атеросклероза;
+• стимуляция деятельности иммунной системы.`,
+    description_uz:`Dengiz asali deb ataladi, chunki uning gel asosi — laminaria va fukus dengiz o'tlari bo'lib, ular organizmingizni ta'minlaydi:
+
+• A, E, C va PP vitaminlari — antioksidantlar va faol metabolitlar;
+• infarkt xavfini kamaytiradigan alginatlar va fukoidanlar;
+• qalqonsimon bez uchun zarur yod;
+• barcha zarur mikro- va makroelementlar;
+• organizmning barcha oqsillarini quruvchi aminokislotalar;
+• aterosklerozning oldini olishga yordam beruvchi omega-3 yog' kislotalar.`,
+    ingredients:[
+      {name:"Ламинария и фукус (гелевая основа)", name_uz:"Laminaria va fukus (gel asosi)",
+       desc:"Обеспечивают организм витаминами А, Е, С и РР, альгинатами и фукоиданами, снижающими риск инфаркта, органическим йодом, микро- и макроэлементами, аминокислотами и омега-3 жирными кислотами.",
+       desc_uz:"Organizmni A, E, C va PP vitaminlari, alginatlar va fukoidanlar, organik yod, mikro- va makroelementlar, aminokislotalar va omega-3 yog' kislotalar bilan ta'minlaydi."},
+      {name:"Натуральный мёд с пергой", name_uz:"Perga bilan tabiiy asal",
+       desc:"Богатейший источник углеводов (быстрое энергетическое топливо), витамины группы В (питание нервной системы), микроэлементы, в частности калий, необходимый для нормальной работы сердца. Перга имеет выраженные антитоксические свойства и способствует повышению гемоглобина.",
+       desc_uz:"Uglevodlarning eng boy manbai (tez energiya), B guruhi vitaminlari (asab tizimi uchun oziq), mikroelementlar, xususan yurak uchun zarur kaliy. Perga belgilangan antitoksik xususiyatlarga ega va gemoglobinni oshirishga yordam beradi."},
+      {name:"Прополис", name_uz:"Propolis",
+       desc:"Обладает противомикробным, антиоксидантным и противовоспалительным действием.",
+       desc_uz:"Antimikrob, antioksidant va yallig'lanishga qarshi ta'sirga ega."},
+    ],
+    benefits:["Витамины А, Е, С и РР","Профилактика инфаркта","Источник органического йода","Укрепление иммунитета","Здоровье сердца и сосудов","Повышение гемоглобина","Борьба с хроническим стрессом"],
+    benefits_uz:["A, E, C va PP vitaminlari","Infarkt profilaktikasi","Organik yod manbai","Immunitetni mustahkamlash","Yurak va qon tomir salomatligi","Gemoglobinni oshirish","Surunkali stress bilan kurash"],
+    usage:"Взрослым принимать по 2 столовых ложки без верха (40 г) 2 раза в день. Противопоказания: индивидуальная непереносимость ингредиентов.",
+    usage_uz:"Kattalarga kuniga 2 marta 2 osh qoshiq (40 g) qabul qiling. Qarshi ko'rsatmalar: mahsulot tarkibiga individual toqimsizlik.",
+    storage:"Хранить в оригинальной закрытой упаковке в холодильнике при температуре 0°C до +5°C. После вскрытия не более 3 недель. Срок годности 6 месяцев.",
+    storage_uz:"Sovutgichda 0°C dan +5°C gacha original yopiq qadoqda saqlang. Ochilgandan so'ng 3 haftadan ko'p emas. 6 oy.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"500 г"},{l:"Хранение",v:"0°C до +5°C"},{l:"Тип",v:"Пищевой продукт"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"500 g"},{l:"Saqlash",v:"0°C dan +5°C"},{l:"Turi",v:"Oziq-ovqat mahsuloti"}],
+  },
+  {
+    id:5, name:"Laminaria Gel", name_uz:"Laminaria Gel",
+    short:"Специализированный пищевой продукт диетического лечебного питания", short_uz:"Parhez davolash oziqlanishining maxsus pishqovli mahsuloti",
+    cat:"гели", badge:"", img:IMG("Vertera_Gel.jpg"), emoji:"🌊",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Госрегистрация ЕАЭС"],
+    description:`Клетки ламинарии содержат богатейший комплекс незаменимых для человека витаминов, микро- и макроэлементов, а также растительные волокна для эффективного детокса. Запатентованная технология позволяет нам извлечь их в целости с максимальной биодоступностью!
+
+С Vertera Gel ваш организм получает уникальное сочетание ценных веществ, среди которых 18 витаминов, 8 макроэлементов, 23 ультра- и микроэлемента, 9 незаменимых аминокислот и 17 полезных ненасыщенных жирных кислот, содержащихся в ламинарии.
+
+Vertera Gel — это:
+• эффективный детокс;
+• крепкий иммунитет;
+• источник йода и полезных веществ;
+• активное долголетие;
+• здоровый желудочно-кишечный тракт;
+• укрепление сердца и сосудов.
+
+Vertera Gel официально сертифицирован как специализированный пищевой продукт диетического лечебного питания.`,
+    description_uz:`Laminaria hujayralari samarali detoks uchun o'simlik tolalari hamda insonlar uchun zarur vitaminlar, mikro- va makroelementlarning eng boy kompleksini o'z ichiga oladi. Patentlangan texnologiya ularni maksimal biologik mavjudlik bilan to'liq holda ajratib olish imkonini beradi!
+
+Vertera Gel bilan organizmingiz 18 vitamin, 8 makroelement, 23 ultra- va mikroelement, 9 almashinmas aminokislota va 17 foydali to'yinmagan yog' kislotalarining noyob kombinatsiyasini oladi.
+
+Vertera Gel — bu:
+• samarali detoks;
+• kuchli immunitet;
+• yod va foydali moddalar manbai;
+• faol uzoq umr;
+• sog'lom me'da-ichak yo'li;
+• yurak va qon tomirlarini mustahkamlash.`,
+    ingredients:[
+      {name:"Ламинария (клеточный биогель)", name_uz:"Laminaria (hujayraviy biogel)",
+       desc:"Клетки ламинарии содержат 18 витаминов, 8 макроэлементов, 23 микроэлемента, 9 незаменимых аминокислот и 17 ненасыщенных жирных кислот. Запатентованная технология извлекает их в целости с максимальной биодоступностью.",
+       desc_uz:"Laminaria hujayralari 18 vitamin, 8 makroelement, 23 mikroelement, 9 almashinmas aminokislota va 17 to'yinmagan yog' kislotasini o'z ichiga oladi. Patentlangan texnologiya ularni maksimal biologik mavjudlik bilan to'liq holda ajratib oladi."},
+      {name:"Растительные волокна", name_uz:"O'simlik tolalari",
+       desc:"Обеспечивают эффективный детокс организма.",
+       desc_uz:"Organizmning samarali detoksini ta'minlaydi."},
+    ],
+    benefits:["Эффективный детокс","Крепкий иммунитет","Источник йода и полезных веществ","Активное долголетие","Здоровый ЖКТ","Укрепление сердца и сосудов"],
+    benefits_uz:["Samarali detoks","Kuchli immunitet","Yod va foydali moddalar manbai","Faol uzoq umr","Sog'lom me'da-ichak yo'li","Yurak va qon tomirlarini mustahkamlash"],
+    usage:"Взрослым принимать по 2 столовые ложки без верха (40 г) 2 раза в день за 30 минут до еды. Курсами по 4 недели с перерывами 5-7 дней. Рекомендуется смешивать с соком. Противопоказания: состояния при которых противопоказаны препараты йода.",
+    usage_uz:"Kattalarga ovqatdan 30 daqiqa oldin kuniga 2 marta 2 osh qoshiq (40 g). 4 haftalik kurslar, 5-7 kun tanaffus. Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha. 6 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"500 г"},{l:"Курс",v:"4 нед., перерыв 5-7 дн."},{l:"Тип",v:"Лечебное питание"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"500 g"},{l:"Kurs",v:"4 hafta, 5-7 kun tanaffus"},{l:"Turi",v:"Davolash oziqlanishi"}],
+  },
+  {
+    id:6, name:"Vertera Forte", name_uz:"Vertera Forte",
+    short:"Ламинария + фукус + дигидрокверцетин", short_uz:"Laminaria + fukus + digidrokvertsetin",
+    cat:"гели", badge:"hit", img:IMG("Vertera_Forte.jpg"), emoji:"💪",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Декларация ЕАЭС до 02.12.2027"],
+    description:`Vertera Forte — это:
+• Укрепление иммунитета.
+• Замедление старения организма.
+• Комплексная программа детоксикации.
+• Восполнение дефицита полезных нутриентов, витаминов, микро- и макроэлементов.
+• Вся польза клеточного геля ламинарии и фукуса.`,
+    description_uz:`Vertera Forte — bu:
+• Immunitetni mustahkamlash.
+• Organizm qarishini sekinlashtirish.
+• Kompleks detoksikatsiya dasturi.
+• Foydali oziq moddalar, vitaminlar, mikro- va makroelementlar tanqisligini to'ldirish.
+• Laminaria va fukus hujayraviy gelining barcha foydasi.`,
+    ingredients:[
+      {name:"Ламинария", name_uz:"Laminaria",
+       desc:"Содержит богатейший комплекс витаминов, минералов, микро- и макроэлементов, незаменимых аминокислот. Лидер по содержанию органического йода.",
+       desc_uz:"Vitaminlar, minerallar, mikro- va makroelementlar, almashinmas aminokislotalarning eng boy kompleksini o'z ichiga oladi. Organik yod bo'yicha lider."},
+      {name:"Фукус", name_uz:"Fukus",
+       desc:"Богат фукоиданом, снижающим риск образования тромбов, инфарктов и инсультов. Обладает противоопухолевым, антибактериальным, антивирусным, антидиабетическим, иммуномодулирующим свойствами.",
+       desc_uz:"Tromblar, infarkt va insult xavfini kamaytiradigan fukoidanga boy. O'sma, bakteriya, virus, diabet va immunomodulyatsiyaga qarshi xususiyatlarga ega."},
+      {name:"Дигидрокверцетин", name_uz:"Digidrokvertsetin",
+       desc:"Природный антиоксидант с активностью, превосходящей витамины В, С, бета-каротин и токоферол в десятки раз. Замедляет процессы старения. В сочетании с ламинарией и фукусом даёт мощный синергетический эффект.",
+       desc_uz:"Tabiiy antioksidant, faolligi B, C vitaminlari, beta-karotin va tokoferoldan o'nlab marta yuqori. Qarishi jarayonlarini sekinlashtiradi. Laminaria va fukus bilan birgalikda kuchli sinergistik ta'sir beradi."},
+    ],
+    benefits:["Укрепление иммунитета","Замедление старения","Комплексный детокс","Восполнение нутриентов","Здоровье сосудов и сердца","Антиоксидантная защита"],
+    benefits_uz:["Immunitetni mustahkamlash","Qarishni sekinlashtirish","Kompleks detoks","Oziq moddalarni to'ldirish","Qon tomir va yurak salomatligi","Antioksidant himoya"],
+    usage:"2 столовые ложки без верха (40 г) 2 раза в день. Рекомендуется смешивать с соком. Противопоказания: состояния при которых противопоказаны препараты йода.",
+    usage_uz:"Kuniga 2 marta 2 osh qoshiq (40 g). Sharbat bilan aralashtirib ichish tavsiya etiladi. Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha. 6 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"500 г"},{l:"Срок",v:"6 месяцев"},{l:"После вскрытия",v:"21 день"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"500 g"},{l:"Muddat",v:"6 oy"},{l:"Ochilgandan",v:"21 kun"}],
+  },
+  {
+    id:7, name:"Vertera Forte «Вишня»", name_uz:"Vertera Forte «Gilos»",
+    short:"Forte + природные адаптогены на вишнёвом соке", short_uz:"Forte + tabiiy adaptogenlar gilos sharbatida",
+    cat:"гели", badge:"", img:IMG("Vertera_Forte_«Вишня».jpg"), emoji:"🍒",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Декларация ЕАЭС до 22.08.2027"],
+    description:`Витаминно-минеральный комплекс Vertera Forte теперь обогащён природными адаптогенами и иммуномодуляторами.
+
+• Витамины, минералы, микро- и макроэлементы.
+• Крепкий иммунитет.
+• Мягкий и эффективный детокс.
+• Повышение тонуса организма, больше сил и энергии.
+• Вкус натуральных фруктов.
+
+Содержит натуральные адаптогены — растения, способные повышать сопротивляемость организма к широкому спектру вредных воздействий и стрессу, стимулировать иммунитет.`,
+    description_uz:`Vertera Forte vitamini-mineral kompleksi endi tabiiy adaptogenlar va immunomodulyatorlar bilan boyitilgan.
+
+• Vitaminlar, minerallar, mikro- va makroelementlar.
+• Kuchli immunitet.
+• Yumshoq va samarali detoks.
+• Organizm tonusini oshirish, ko'proq kuch va energiya.
+• Tabiiy meva ta'mi.
+
+Tabiiy adaptogenlarni o'z ichiga oladi — organizmning keng doiradagi zararli ta'sirlarga va stressga qarshiligini oshira oladigan, immunitetni stimulyatsiya qiladigan o'simliklar.`,
+    ingredients:[
+      {name:"Шиповник", name_uz:"Itburun", desc:"Богат витаминами и микроэлементами.", desc_uz:"Vitaminlar va mikroelementlarga boy."},
+      {name:"Морской пектин", name_uz:"Dengiz pektini", desc:"Выводит токсины.", desc_uz:"Zaharli moddalarni chiqaradi."},
+      {name:"Эхинацея", name_uz:"Ekhinatseya", desc:"Стимулятор иммунитета.", desc_uz:"Immunitet stimulyatori."},
+      {name:"Солодка", name_uz:"Qizilmiya", desc:"Против аллергии и воспаления.", desc_uz:"Allergiya va yallig'lanishga qarshi."},
+      {name:"Белокочанная капуста", name_uz:"Oq karam", desc:"Источник незаменимых аминокислот.", desc_uz:"Almashinmas aminokislotalar manbai."},
+      {name:"Элеутерококк", name_uz:"Eleuterokokk", desc:"Дарит силы и энергию.", desc_uz:"Kuch va energiya beradi."},
+      {name:"Ромашка, календула и сабельник", name_uz:"Papatiya, qalendula va sabelnik", desc:"Против болезней.", desc_uz:"Kasalliklarga qarshi."},
+    ],
+    benefits:["Природные адаптогены","Крепкий иммунитет","Витамины и минералы","Мягкий детокс","Больше сил и энергии","Вишнёвый вкус"],
+    benefits_uz:["Tabiiy adaptogenlar","Kuchli immunitet","Vitaminlar va minerallar","Yumshoq detoks","Ko'proq kuch va energiya","Gilos ta'mi"],
+    usage:"2 столовые ложки без верха (40 г) 2 раза в день. Противопоказания: состояния при которых противопоказаны препараты йода; индивидуальная непереносимость.",
+    usage_uz:"Kuniga 2 marta 2 osh qoshiq (40 g). Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha. 6 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"580 г"},{l:"Вкус",v:"Вишня"},{l:"Курс",v:"1 месяц"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"580 g"},{l:"Ta'm",v:"Gilos"},{l:"Kurs",v:"1 oy"}],
+  },
+  {
+    id:8, name:"Vertera Forte «Яблоко»", name_uz:"Vertera Forte «Olma»",
+    short:"Forte + природные адаптогены на яблочном соке", short_uz:"Forte + tabiiy adaptogenlar olma sharbatida",
+    cat:"гели", badge:"", img:IMG("Vertera_Forte_«Яблоко».jpg"), emoji:"🍏",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher","Декларация ЕАЭС"],
+    description:`Витаминно-минеральный комплекс Vertera Forte теперь обогащён природными адаптогенами и иммуномодуляторами.
+
+• Витамины, минералы, микро- и макроэлементы.
+• Крепкий иммунитет.
+• Мягкий и эффективный детокс.
+• Повышение тонуса организма, больше сил и энергии.
+• Вкус натуральных фруктов.
+
+Содержит натуральные адаптогены — растения, способные повышать сопротивляемость организма к широкому спектру вредных воздействий и стрессу, стимулировать иммунитет.`,
+    description_uz:`Vertera Forte vitamini-mineral kompleksi endi tabiiy adaptogenlar va immunomodulyatorlar bilan boyitilgan.
+
+• Vitaminlar, minerallar, mikro- va makroelementlar.
+• Kuchli immunitet.
+• Yumshoq va samarali detoks.
+• Organizm tonusini oshirish, ko'proq kuch va energiya.
+• Tabiiy meva ta'mi.`,
+    ingredients:[
+      {name:"Шиповник", name_uz:"Itburun", desc:"Богат витаминами и микроэлементами.", desc_uz:"Vitaminlar va mikroelementlarga boy."},
+      {name:"Морской пектин", name_uz:"Dengiz pektini", desc:"Выводит токсины.", desc_uz:"Zaharli moddalarni chiqaradi."},
+      {name:"Эхинацея", name_uz:"Ekhinatseya", desc:"Стимулятор иммунитета.", desc_uz:"Immunitet stimulyatori."},
+      {name:"Солодка", name_uz:"Qizilmiya", desc:"Против аллергии и воспаления.", desc_uz:"Allergiya va yallig'lanishga qarshi."},
+      {name:"Белокочанная капуста", name_uz:"Oq karam", desc:"Источник незаменимых аминокислот.", desc_uz:"Almashinmas aminokislotalar manbai."},
+      {name:"Элеутерококк", name_uz:"Eleuterokokk", desc:"Дарит силы и энергию.", desc_uz:"Kuch va energiya beradi."},
+      {name:"Ромашка, календула и сабельник", name_uz:"Papatiya, qalendula va sabelnik", desc:"Против болезней.", desc_uz:"Kasalliklarga qarshi."},
+    ],
+    benefits:["Природные адаптогены","Крепкий иммунитет","Витамины и минералы","Мягкий детокс","Больше сил и энергии","Яблочный вкус"],
+    benefits_uz:["Tabiiy adaptogenlar","Kuchli immunitet","Vitaminlar va minerallar","Yumshoq detoks","Ko'proq kuch va energiya","Olma ta'mi"],
+    usage:"2 столовые ложки без верха (40 г) 2 раза в день. Противопоказания: состояния при которых противопоказаны препараты йода; индивидуальная непереносимость.",
+    usage_uz:"Kuniga 2 marta 2 osh qoshiq (40 g). Qarshi ko'rsatmalar: yod preparatlari qarshi ko'rsatilgan holatlarda; individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C. Срок годности 6 месяцев. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha. 6 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"2 ст.л. × 2 р/день"},{l:"Вес",v:"580 г"},{l:"Вкус",v:"Яблоко"},{l:"Курс",v:"1 месяц"}],
+    dosage_uz:[{l:"Doza",v:"2 q.q. × 2 marta/kun"},{l:"Og'irlik",v:"580 g"},{l:"Ta'm",v:"Olma"},{l:"Kurs",v:"1 oy"}],
+  },
+  {
+    id:9, name:"True Vision", name_uz:"True Vision",
+    short:"Косметический тоник для кожи век и вокруг глаз", short_uz:"Ko'z qovoqlari uchun kosmetik tonik",
+    cat:"косметика", badge:"", img:IMG("True_Vision.png"), emoji:"👁️",
+    price:"170 000 сум", price_uz:"170 000 so'm", pv:"2.5",
+    tags:["halal"],
+    certs:["Halal","ISO 22000","Декларация ЕАЭС"],
+    description:`True Vision идеален для нормализации pH-баланса после использования других средств, особенно с агрессивными компонентами. Синергия экстрактов ламинарии и алоэ обеспечивает эффективную заботу о чувствительной коже периорбитальной области.
+
+True Vision — это:
+• Комплексный мягкий уход.
+• Питание и восстановление.
+• Антиоксидантная защита.
+• Ионы серебра для регенерации и борьбы с воспалениями.`,
+    description_uz:`True Vision boshqa vositalardan, ayniqsa agressiv komponentli vositalardan foydalangandan keyin pH muvozanatini normallashtirish uchun ideal. Laminaria va aloe ekstraktlarining sinergiyasi periorbital soha sezgir terisini samarali parvarish qiladi.
+
+True Vision — bu:
+• Keng qamrovli yumshoq parvarish.
+• Oziqlantirish va tiklash.
+• Antioksidant himoya.
+• Regeneratsiya va yallig'lanishga qarshi kumush ionlari.`,
+    ingredients:[
+      {name:"Ионы серебра", name_uz:"Kumush ionlari",
+       desc:"Обеспечивают регенерацию кожи и борьбу с воспалениями.",
+       desc_uz:"Teri regeneratsiyasini ta'minlaydi va yallig'lanishga qarshi kurashadi."},
+      {name:"Мёд (6 витаминов и 7 микроэлементов)", name_uz:"Asal (6 vitamin va 7 mikroelement)",
+       desc:"Питают кожу, замедляют старение и борются с морщинами.",
+       desc_uz:"Terini oziqlantirad, qarishini sekinlashtiradi va ajinlarga qarshi kurashadi."},
+      {name:"Аденозин", name_uz:"Adenozin",
+       desc:"Увеличивает выработку коллагена и эластина в коже.",
+       desc_uz:"Teridagi kollagen va elastin ishlab chiqarilishini oshiradi."},
+      {name:"Ацеманнан (из алоэ)", name_uz:"Atsemannan (aloedan)",
+       desc:"Улучшает общий метаболизм в тканях периорбитальной области.",
+       desc_uz:"Periorbital soha to'qimalarida umumiy moddalar almashinuvini yaxshilaydi."},
+      {name:"Витамин С", name_uz:"C vitamini",
+       desc:"Стимулирует выработку коллагена, борется со старением.",
+       desc_uz:"Kollagen ishlab chiqarilishini stimulyatsiya qiladi, qarishga qarshi kurashadi."},
+      {name:"Витамин В12", name_uz:"B12 vitamini",
+       desc:"Активирует регенерацию кожи, делает её более эластичной.",
+       desc_uz:"Teri regeneratsiyasini faollashtiradi, uni yanada elastik qiladi."},
+    ],
+    benefits:["Нормализация pH-баланса","Питание и восстановление","Антиоксидантная защита","Борьба с морщинами","Выработка коллагена и эластина","Регенерация кожи"],
+    benefits_uz:["pH muvozanatini normallashtirish","Oziqlantirish va tiklash","Antioksidant himoya","Ajinlarga qarshi kurash","Kollagen va elastin sintezi","Teri regeneratsiyasi"],
+    usage:"По 2-3 капли наносить на каждое веко 2-3 раза в день. Курс 1-2 месяца. Перед использованием провести тест на чувствительность кожи.",
+    usage_uz:"Har bir qovoqqa kuniga 2-3 marta 2-3 tomchi qo'llang. Kurs 1-2 oy.",
+    storage:"Хранить при температуре 5°C до 25°C в сухом, защищённом от света месте. Срок хранения 24 месяца.",
+    storage_uz:"5°C dan 25°C gacha quruq joyda saqlang. 24 oy.",
+    dosage:[{l:"Доза",v:"2-3 капли на веко"},{l:"Частота",v:"2-3 раза в день"},{l:"Курс",v:"1-2 месяца"},{l:"Тип",v:"Косметика"}],
+    dosage_uz:[{l:"Doza",v:"Har qovoqqa 2-3 tomchi"},{l:"Chastota",v:"Kuniga 2-3 marta"},{l:"Kurs",v:"1-2 oy"},{l:"Turi",v:"Kosmetika"}],
+  },
+  {
+    id:10, name:"Масло водорослевое", name_uz:"Suv o'tlari yog'i",
+    short:"Сила 8 растительных масел + вся польза ламинарии и фукуса", short_uz:"8 o'simlik yog'ining kuchi + laminaria va fukusning barcha foydasi",
+    cat:"косметика", badge:"", img:IMG("Seaweed_body_oil.png"), emoji:"🌿",
+    price:"340 000 сум", price_uz:"340 000 so'm", pv:"5",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","Kosher","Декларация ЕАЭС"],
+    description:`В составе натурального водорослевого масла для тела — композиция масел оливы, облепихи, шиповника, семян тыквы и льна, обогащённая антиоксидантом дигидрокверцетином. Используйте Seaweed body oil как финальное средство после масок для тела.
+
+Seaweed body oil — это:
+• сила 8 растительных масел;
+• идеальный вариант для применения после ванны или душа;
+• вся польза ламинарии и фукуса;
+• глубокое питание и тонус кожи.
+
+Максимальный эффект от применения масла — после ванны или душа.
+• Повышает упругость кожи.
+• Содержит физиологические концентрации хорошо усвояемых веществ морских водорослей.
+• Обладает ранозаживляющим действием.
+• Способствует проникновению натуральных биоактивных компонентов в глубокие слои кожи.`,
+    description_uz:`Tabiiy suv o'tlari tana yog'ining tarkibida zaytun, dengiz teragi, itburun, qovoq va zig'ir urug'lari yog'larining kompozitsiyasi mavjud bo'lib, u digidrokvertsetin antioksidanti bilan boyitilgan.
+
+Seaweed body oil — bu:
+• 8 o'simlik yog'ining kuchi;
+• vanna yoki dushdan keyin qo'llash uchun ideal variant;
+• laminaria va fukusning barcha foydasi;
+• terini chuqur oziqlantirish va tonus.`,
+    ingredients:[
+      {name:"Масло виноградных косточек + водорослевое масло", name_uz:"Uzum urug'i yog'i + suv o'tlari yog'i",
+       desc:"Основа масла. Содержит физиологические концентрации хорошо усвояемых веществ морских водорослей.",
+       desc_uz:"Yog'ning asosi. Dengiz suv o'tlari moddalarining yaxshi so'riladigan fiziologik konsentratsiyalarini o'z ichiga oladi."},
+      {name:"Дигидрокверцетин", name_uz:"Digidrokvertsetin",
+       desc:"Антиоксидант. Повышает упругость кожи и обладает ранозаживляющим действием.",
+       desc_uz:"Antioksidant. Teri elastikligini oshiradi va yarani tuzatuvchi ta'sirga ega."},
+      {name:"Масла можжевельника, лаванды, грейпфрута, мяты, абрикоса, розмарина", name_uz:"Archa, lavanda, greypfrut, yalpiz, o'rik, rozmarin yog'lari",
+       desc:"Способствуют проникновению натуральных биоактивных компонентов в глубокие слои кожи.",
+       desc_uz:"Tabiiy bioaktiv komponentlarning teri chuqur qatlamlariga kirishiga yordam beradi."},
+    ],
+    benefits:["Глубокое питание кожи","Упругость и тонус","Ранозаживляющее действие","Антиоксидантная защита","Проникновение биоактивных веществ","Лучшее средство после ванны"],
+    benefits_uz:["Terini chuqur oziqlantirish","Elastiklik va tonus","Yarani tuzatuvchi ta'sir","Antioksidant himoya","Bioaktiv moddalarning kirib borishi","Vanna keyin eng yaxshi vosita"],
+    usage:"Нанести на чистую кожу тела массажными движениями. Через 10-15 минут промокнуть салфеткой, при необходимости смыть тёплой водой. Не наносить на кожу лица. Избегать контакта с глазами.",
+    usage_uz:"Toza tana terisiga massaj harakatlari bilan qo'llang. 10-15 daqiqadan keyin salfetkada arting. Yuzga surtmang.",
+    storage:"Хранить при температуре +5°C до +20°C вдали от прямых солнечных лучей. Срок хранения 12 месяцев.",
+    storage_uz:"+5°C dan +20°C gacha quyosh nuridan uzoqda saqlang. 12 oy.",
+    dosage:[{l:"Применение",v:"Наружно на тело"},{l:"Время",v:"10-15 минут"},{l:"Срок",v:"12 месяцев"},{l:"Тип",v:"Косметика"}],
+    dosage_uz:[{l:"Qo'llash",v:"Tanaga tashqi"},{l:"Vaqt",v:"10-15 daqiqa"},{l:"Muddat",v:"12 oy"},{l:"Turi",v:"Kosmetika"}],
+  },
+  {
+    id:11, name:"Vertera Hydrate Collagen 100 ml", name_uz:"Vertera Hydrate Collagen 100 ml",
+    short:"Нативный коллаген — гель для кожи, тела и волос", short_uz:"Nativ kollagen — teri, tana va soch uchun gel",
+    cat:"косметика", badge:"new", img:IMG("Vertera_HC_(Hydrate_Collagen).jpg"), emoji:"💧",
+    price:"425 000 сум", price_uz:"425 000 so'm", pv:"6.25",
+    tags:["halal","kosher"],
+    certs:["Halal","Kosher","Декларация ЕАЭС"],
+    description:`Vertera HC — легкоусвояемый белок коллагена, находящийся в природном (нативном) состоянии и сохранивший структуру, присущую ему в живой клетке. Инновационная технология, разработанная компанией, позволяет, не нарушая природную структуру коллагена, сохранить его естественную пользу.
+
+Vertera HC:
+• Поддерживает водный баланс.
+• Оказывает лифтинг-эффект.
+• 100% натурально и гипоаллергенно.
+• Антиоксидантная защита.
+
+Идеальная кожа:
+• Увлажняет, сохраняет эластичность и упругость, улучшает цвет.
+• Предотвращает и разглаживает морщины, шрамы, растяжки.
+• Ухаживает после депиляции или солярия.
+• Защищает от УФ-лучей, обновляет и омолаживает.
+• Устраняет целлюлит, растяжки, рубцы.
+• Снимает раздражение, восстанавливает тонус.
+
+Красивые волосы:
+• Улучшает текстуру.
+• Запечатывает секущиеся кончики.
+• Питает, укрепляет, придаёт блеск и объём.
+• Восстанавливает после окрашивания.
+• Активизирует выработку кератина.
+• Питает фолликулы.
+
+Молодость и красота:
+• Замедляет старение.
+• Повышает подвижность суставов.
+• Уменьшает боли при дефиците соединительной ткани.
+• Способствует устранению гематом и ожогов.`,
+    description_uz:`Vertera HC — tirik hujayrada unga xos tuzilishini saqlab qolgan, tabiiy (nativ) holatdagi osongina so'riladigan kollagen oqsili. Kompaniya tomonidan ishlab chiqilgan innovatsion texnologiya kollagenning tabiiy tuzilishini buzmasdan uning tabiiy foydasini saqlash imkonini beradi.
+
+Vertera HC:
+• Suv muvozanatini saqlaydi.
+• Lifting ta'sirini ko'rsatadi.
+• 100% tabiiy va gipoallergen.
+• Antioksidant himoya.`,
+    ingredients:[
+      {name:"Гидрат коллагена (нативный)", name_uz:"Kollagen gidrati (nativ)",
+       desc:"Легкоусвояемый белок коллагена в природном (нативном) состоянии, сохранивший структуру, присущую ему в живой клетке. Инновационная технология позволяет не нарушать природную структуру коллагена.",
+       desc_uz:"Tirik hujayrada unga xos tuzilishini saqlab qolgan, tabiiy (nativ) holatdagi osongina so'riladigan kollagen oqsili. Innovatsion texnologiya kollagenning tabiiy tuzilishini saqlab qolish imkonini beradi."},
+      {name:"Цитрат серебра", name_uz:"Kumush tsitrati",
+       desc:"Обеспечивает антиоксидантную защиту и натуральный консервирующий эффект без агрессивных химических консервантов.",
+       desc_uz:"Antioksidant himoya va agressiv kimyoviy konservantlarsiz tabiiy konservalash ta'minlaydi."},
+    ],
+    benefits:["Лифтинг-эффект","Глубокое увлажнение","Устранение морщин и растяжек","Восстановление волос","Борьба с целлюлитом","Заживление гематом и ожогов","100% натурально"],
+    benefits_uz:["Lifting ta'siri","Chuqur namlash","Ajinlar va cho'zg'ularni yo'q qilish","Sochni tiklash","Sellülitga qarshi","Gematom va kuyishlarni tuzalishi","100% tabiiy"],
+    usage:"Наносить на чистую кожу лёгкими массирующими движениями до полного впитывания. Для маски: нанести более толстым слоем, оставить 20-25 минут, смыть прохладной водой. ВАЖНО: не нагревать выше 27°C! Только для наружного применения.",
+    usage_uz:"Toza teriga engil massaj harakatlari bilan singib ketguncha yoqing. Niqob uchun: qalin qatlam, 20-25 daqiqa, sovuq suv. MUHIM: 27°C dan yuqori qizdirmang!",
+    storage:"Хранить при температуре +5°C до +18°C в сухом, защищённом от света месте. Срок хранения 6 месяцев.",
+    storage_uz:"+5°C dan +18°C gacha quruq joyda saqlang. 6 oy.",
+    dosage:[{l:"Применение",v:"Наружно"},{l:"Маска",v:"20-25 минут"},{l:"ВАЖНО",v:"Не нагревать >27°C"},{l:"Тип",v:"Косметика"}],
+    dosage_uz:[{l:"Qo'llash",v:"Tashqi"},{l:"Niqob",v:"20-25 daqiqa"},{l:"MUHIM",v:"27°C dan qizdirmang"},{l:"Turi",v:"Kosmetika"}],
+  },
+  {
+    id:12, name:"Набор Plasma Therapy", name_uz:"Plasma Therapy to'plami",
+    short:"Тоник + Сыворотка + Крем — плазмолифтинг без инъекций", short_uz:"Tonik + Serum + Krem — in'eksiyasiz plazmaliftinq",
+    cat:"косметика", badge:"hit", img:IMG("Набор_Plasma_Therapy.jpg"), emoji:"🌟",
+    price:"2 720 000 сум", price_uz:"2 720 000 so'm", pv:"40",
+    tags:["vegan"],
+    certs:["Декларация ЕАЭС"],
+    description:`Встречайте PLASMA THERAPY — сильнейший плазмо-корректор без инъекций!
+20 лет исследований свойств морских бурых водорослей и 8 лет научных разработок.
+
+Учёные VERTERA создали технологию выделения из бурых морских водорослей экзосом — микрочастиц, способных проникать через кожный барьер. Эта способность стала основой запатентованной формулы PLASMA® и всей линейки косметических средств PLASMA THERAPY.
+
+Биоактивные вещества бурых морских водорослей:
+• Питают, увлажняют, насыщают витаминами, полезными компонентами и минералами;
+• Повышают тонус и тургор, восстанавливают эластичность, укрепляют кожный каркас, оказывают выраженный подтягивающий эффект;
+• Обладают мощным эффектом детоксикации — выводят шлаки и токсины, стимулируют отток лимфы, выводят лишнюю жидкость и устраняют отёчность.
+
+Последовательное применение тоника, сыворотки и крема PLASMA THERAPY активирует ген BCL-2, который замедляет процесс старения клеток, стимулирует образование фибробластов, запускает синтез коллагена и гиалуроновой кислоты.
+
+• Омоложение.
+• Защита кожи.
+• Глубокое увлажнение.
+• Снижение фоточувствительности кожи.
+• Улучшение трофики кожи.
+• Видимый лифтинг-эффект.
+• Борьба с гиперпигментацией.
+
+Plasma Therapy. Активируйте генетический код молодости!`,
+    description_uz:`PLASMA THERAPY — in'eksiyasiz eng kuchli plazmo-korrektor!
+Qo'ng'ir dengiz suv o'tlari xususiyatlarini 20 yil o'rganish va 8 yil ilmiy ishlanmalar.
+
+VERTERA olimlari qo'ng'ir dengiz suv o'tlaridan teri to'sig'ini kesib o'ta oladigan mikrozarralar — ekzosomalarni ajratib olish texnologiyasini yaratdi. Bu xususiyat PLASMA® patentlangan formulasi va PLASMA THERAPY kosmetika liniyasining asosiga aylandi.
+
+Qo'ng'ir dengiz suv o'tlarining bioaktiv moddalari:
+• Oziqlantirad, namlaydi, vitaminlar, foydali komponentlar va minerallar bilan to'yintiradi;
+• Tonus va turgorni oshiradi, elastiklikni tiklaydi, kuchli tortuvchi effekt ko'rsatadi;
+• Kuchli detoksikatsiya effekti — shlag va zaharli moddalarni chiqaradi, limfa oqimini rag'batlantiradi.`,
+    ingredients:[
+      {name:"PLASMA® — экзосомы бурых морских водорослей", name_uz:"PLASMA® — qo'ng'ir dengiz suv o'tlari ekzosomalari",
+       desc:"Запатентованная технология — микрочастицы, способные проникать через кожный барьер и доставлять биоактивные вещества в глубокие слои кожи. Активирует ген BCL-2, который замедляет процесс старения клеток, стимулирует образование фибробластов, запускает синтез коллагена и гиалуроновой кислоты. Концентрация: Тоник 10%, Сыворотка 30%, Крем 20%.",
+       desc_uz:"Patentlangan texnologiya — teri to'sig'ini kesib o'tib, bioaktiv moddalarni teri chuqur qatlamlariga yetkazadigan mikrozarralar. BCL-2 genini faollashtiradi — hujayra qarishini sekinlashtiradi, fibroblastlar hosil bo'lishini rag'batlantiradi, kollagen va gialuron kislota sintezini ishga tushiradi."},
+      {name:"Гиалуронат натрия", name_uz:"Natriy gialuronat",
+       desc:"Обеспечивает глубокое увлажнение кожи.",
+       desc_uz:"Terini chuqur namlashni ta'minlaydi."},
+    ],
+    benefits:["Активация гена молодости BCL-2","Синтез коллагена и гиалуроновой кислоты","Видимый лифтинг-эффект","Глубокое увлажнение","Борьба с гиперпигментацией","Детоксикация кожи","Омоложение без инъекций"],
+    benefits_uz:["BCL-2 yoshlik genini faollashtirish","Kollagen va gialuron kislota sintezi","Ko'rinadigan lifting ta'siri","Chuqur namlash","Giperpigmentatsiyaga qarshi","Teri detoksi","In'eksiyasiz yoshartirish"],
+    usage:"ТОНИК: нанести на очищенное лицо ватным диском утром и вечером. СЫВОРОТКА: через 1-2 мин после тоника нанести на лицо и шею. КРЕМ: финальный этап — нанести поверх сыворотки. Курс — не менее 1 месяца.",
+    usage_uz:"TONIK: ertalab va kechqurun tozalangan yuzga paxta disk bilan qo'llang. SERUM: tonikdan 1-2 daqiqa keyin. KREM: oxirgi bosqich. Kurs — kamida 1 oy.",
+    storage:"Хранить при комнатной температуре, вдали от прямых солнечных лучей. Вскрытые средства использовать в течение 6 месяцев.",
+    storage_uz:"Xona haroratida, quyosh nuridan uzoqda saqlang. Ochilgandan so'ng 6 oy ichida.",
+    dosage:[{l:"Тоник",v:"Утром и вечером"},{l:"Сыворотка",v:"После тоника"},{l:"Крем",v:"Финальный этап"},{l:"Курс",v:"От 1 месяца"}],
+    dosage_uz:[{l:"Tonik",v:"Ertalab va kechqurun"},{l:"Serum",v:"Tonikdan keyin"},{l:"Krem",v:"Oxirgi bosqich"},{l:"Kurs",v:"1 oydan kam emas"}],
+  },
+  {
+    id:13, name:"Artroplast", name_uz:"Artroplast",
+    short:"Хондроитин + глюкозамин + ламинария для суставов", short_uz:"Kondroitin + glyukozamin + laminaria — bo'g'imlar uchun",
+    cat:"гели", badge:"", img:IMG("Artroplast.png"), emoji:"🦴",
+    price:"425 000 сум", price_uz:"425 000 so'm", pv:"",
+    tags:["vegan","halal","kosher"],
+    certs:["Halal","Vegan","ISO 22000","Kosher"],
+    description:`Гель "Artroplast" снабжает организм всеми витаминами, микро- и макроэлементами, которые нужны для нормальной работы суставов и поддержания прочности костной ткани. Продукт богат органическим йодом, необходимым щитовидной железе для регуляции обменных процессов.
+
+Artroplast:
+• Защищает хрящи, суставы и связки от повреждений.
+• Легкоусвояемые хондроитин и глюкозамин.
+• Полезен при любом уровне нагрузок на суставы.
+• Для употребления в любом возрасте.`,
+    description_uz:`"Artroplast" geli organizmni bo'g'imlarning normal ishlashi va suyak to'qimasining mustahkamligini saqlash uchun zarur barcha vitaminlar, mikro- va makroelementlar bilan ta'minlaydi. Mahsulot moddalar almashinuvi jarayonlarini tartibga solish uchun qalqonsimon bezga zarur bo'lgan organik yodga boy.
+
+Artroplast:
+• Tog'ay, bo'g'im va boylamlarni zararlanishdan himoya qiladi.
+• Osongina so'riladigan kondroitin va glyukozamin.
+• Bo'g'imlarga istalgan darajadagi yuklamalarda foydali.
+• Har qanday yoshda qabul qilish uchun.`,
+    ingredients:[
+      {name:"Хондроитина сульфат", name_uz:"Kondroitin sulfat",
+       desc:"Увеличивает подвижность суставов. Укрепляет хрящи, сухожилия и связки.",
+       desc_uz:"Bo'g'im harakatchanligini oshiradi. Tog'ay, pay va boylamlarni mustahkamlaydi."},
+      {name:"Глюкозамин", name_uz:"Glyukozamin",
+       desc:"Способствует регенерации хрящей. Снимает воспаление и уменьшает боль.",
+       desc_uz:"Tog'ay regeneratsiyasiga yordam beradi. Yallig'lanishni kamaytiradi va og'riqni pasaytiradi."},
+      {name:"Боярышник", name_uz:"Do'lana",
+       desc:"Снимает отёки, уменьшает ревматические боли, восстанавливает эластичность сустава.",
+       desc_uz:"Shishlarni kamaytiradi, revmatik og'riqlarni kamaytiradi, bo'g'im elastikligini tiklaydi."},
+      {name:"Капуста белокочанная", name_uz:"Oq karam",
+       desc:"Источник аминокислот для роста и восстановления костей и суставов.",
+       desc_uz:"Suyaklar va bo'g'imlarning o'sishi va tiklanishi uchun aminokislotalar manbai."},
+      {name:"Шиповник", name_uz:"Itburun",
+       desc:"Витамин С помогает усваивать и вырабатывать коллаген — белок соединительной ткани.",
+       desc_uz:"C vitamini biriktiruvchi to'qima oqsili bo'lgan kollagenni o'zlashtirishga va ishlab chiqarishga yordam beradi."},
+    ],
+    benefits:["Защита хрящей, суставов и связок","Регенерация хрящевой ткани","Снятие воспаления и боли","Подвижность суставов","Укрепление костной ткани","Для любого возраста"],
+    benefits_uz:["Tog'ay, bo'g'im va boylamlarni himoya","Tog'ay to'qimasining regeneratsiyasi","Yallig'lanish va og'riqni kamaytirish","Bo'g'im harakatchanligi","Suyak to'qimasini mustahkamlash","Har qanday yosh uchun"],
+    usage:"Взрослым принимать по 1 столовой ложке без верха (20 г) 1 раз в день. Курс 1 месяц. Противопоказания: индивидуальная непереносимость компонентов. Перед началом приёма рекомендуется консультация врача.",
+    usage_uz:"Kattalarga kuniga 1 marta 1 osh qoshiq (20 g) qabul qiling. Kurs 1 oy. Qabul qilishdan oldin vrach maslahati tavsiya etiladi. Qarshi ko'rsatmalar: tarkibiy qismlarga individual toqimsizlik.",
+    storage:"Хранить при температуре 0°C до +5°C в сухом, защищённом от света месте. Срок годности 4 месяца. После вскрытия употребить в течение 21 дня.",
+    storage_uz:"0°C dan +5°C gacha quruq joyda saqlang. 4 oy. Ochilgandan so'ng 21 kun.",
+    dosage:[{l:"Доза",v:"1 ст.л. в день"},{l:"Вес",v:"500 г"},{l:"Курс",v:"1 месяц"},{l:"Срок годн.",v:"4 месяца"}],
+    dosage_uz:[{l:"Doza",v:"1 q.q. kuniga"},{l:"Og'irlik",v:"500 g"},{l:"Kurs",v:"1 oy"},{l:"Yaroqlilik",v:"4 oy"}],
+  },
+];
+
+
+// STATE
+// ══════════════════════════════
+let currentCat = "all";
+let searchQuery = "";
+
+// ══════════════════════════════
+// RENDER GRID
+// ══════════════════════════════
+function renderGrid(){
+  const grid = document.getElementById("productsGrid");
+  const noRes = document.getElementById("noRes");
+  const cnt = document.getElementById("cntBadge");
+  const L = LANG[currentLang];
+
+  let filtered = PRODUCTS;
+  if(currentCat !== "all") filtered = filtered.filter(p=>p.cat===currentCat);
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(p=>{
+      const name = currentLang==="uz" && p.name_uz ? p.name_uz : p.name;
+      const short = currentLang==="uz" && p.short_uz ? p.short_uz : p.short;
+      return name.toLowerCase().includes(q) || short.toLowerCase().includes(q) ||
+             p.description.toLowerCase().includes(q);
+    });
+  }
+
+  cnt.textContent = filtered.length;
+
+  if(!filtered.length){
+    grid.innerHTML="";
+    noRes.style.display="block";
+    return;
+  }
+  noRes.style.display="none";
+
+  grid.innerHTML = filtered.map(p=>{
+    const name = currentLang==="uz" && p.name_uz ? p.name_uz : p.name;
+    const short = currentLang==="uz" && p.short_uz ? p.short_uz : p.short;
+    const price = currentLang==="uz" && p.price_uz ? p.price_uz : p.price;
+    const badgeHTML = p.badge ? `<div class="card-badge ${p.badge}">${p.badge==="hit"?"Хит":"Новинка"}</div>` : "";
+    const imgHTML = p.img
+      ? `<img class="card-img" src="${p.img}" alt="${name}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+           onload="this.style.display='block'" style="display:block"/>`
+      : "";
+    return `
+    <div class="card" onclick="openProduct(${p.id})">
+      <div class="card-img-wrap">
+        ${badgeHTML}
+        ${imgHTML}
+        <div class="card-placeholder" style="${p.img?'':'display:flex'}">${p.emoji}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${name}</div>
+        <div class="card-desc">${short}</div>
+        <div class="card-price">${price}</div>
+        <div class="card-arrow">${L.more}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ══════════════════════════════
+// OPEN PRODUCT
+// ══════════════════════════════
+function openProduct(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const L = LANG[currentLang];
+  const isUz = currentLang==="uz";
+
+  const name = isUz && p.name_uz ? p.name_uz : p.name;
+  const short = isUz && p.short_uz ? p.short_uz : p.short;
+  const desc = isUz && p.description_uz ? p.description_uz : p.description;
+  const usage = isUz && p.usage_uz ? p.usage_uz : p.usage;
+  const storage = isUz && p.storage_uz ? p.storage_uz : p.storage;
+  const price = isUz && p.price_uz ? p.price_uz : p.price;
+
+  // tags
+  const tagMap = {vegan:"🌱 Vegan", halal:"☪️ Halal", kosher:"✡️ Kosher"};
+  const tagClass = {vegan:"tag",halal:"tag halal",kosher:"tag kosher"};
+  const tagsHTML = p.tags.map(t=>`<span class="${tagClass[t]}">${tagMap[t]}</span>`).join("");
+
+  // certs
+  const certsHTML = p.certs.map(c=>`<span class="cert-badge">${c}</span>`).join("");
+
+  // ingredients
+  const ingrHTML = p.ingredients.map(i=>{
+    const iname = isUz && i.name_uz ? i.name_uz : i.name;
+    const idesc = isUz && i.desc_uz ? i.desc_uz : i.desc;
+    return `<div class="ingr-item"><div class="ingr-name">${iname}</div><div class="ingr-desc">${idesc}</div></div>`;
+  }).join("");
+
+  // dosage
+  const dosageArr = (isUz && p.dosage_uz) ? p.dosage_uz : (p.dosage || []);
+  const dosageHTML = dosageArr.map(d=>{
+    return `<div class="dosage-item"><div class="dosage-lbl">${d.l||""}</div><div class="dosage-val">${d.v||""}</div></div>`;
+  }).join("");
+
+  const imgHTML = p.img
+    ? `<img class="sheet-img" src="${p.img}" alt="${name}"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+       <div class="sheet-img-ph" style="display:none">${p.emoji}</div>`
+    : `<div class="sheet-img-ph">${p.emoji}</div>`;
+
+  const pvHTML = p.pv ? `<span class="sheet-pv">PV: ${p.pv}</span>` : "";
+
+  // usage with line breaks
+  const usageFormatted = usage.replace(/\n/g,"<br>");
+  const usageSplitRU = usageFormatted.split("Противопоказания:");
+  const usageSplitUZ = usageFormatted.split("Qarshi ko\'rsatmalar:");
+  const usagePart = usageSplitRU.length > 1 ? usageSplitRU[0] : (usageSplitUZ.length > 1 ? usageSplitUZ[0] : usageFormatted);
+  const contraPart = usageSplitRU.length > 1 ? usageSplitRU[1] : (usageSplitUZ.length > 1 ? usageSplitUZ[1] : "");
+
+  document.getElementById("sheetInner").innerHTML = `
+    <div class="sheet-img-wrap">${imgHTML}</div>
+    <div class="sheet-content">
+      <div class="sheet-cat">🌿 ${p.cat}</div>
+      <div class="sheet-title">${name}</div>
+      <div class="sheet-price-line">
+        <div class="sheet-price">${price}</div>
+        ${pvHTML}
+      </div>
+      <div class="sheet-sub">${short}</div>
+      ${tagsHTML ? `<div class="tags-row">${tagsHTML}</div>` : ""}
+      ${certsHTML ? `<div class="cert-row">${certsHTML}</div>` : ""}
+
+      <div class="info-block">
+        <div class="info-title">${L.about}</div>
+        <div class="info-text">${desc}</div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-title">${L.ingr}</div>
+        <div class="info-text">${ingrHTML}</div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-title">${L.usage}</div>
+        <div class="info-text">${usagePart}</div>
+        <div class="dosage-grid">${dosageHTML}</div>
+      </div>
+
+      ${contraPart ? `<div class="info-block"><div class="info-title">⚠️ ${isUz ? "Qarshi ko\'rsatmalar" : "Противопоказания"}</div><div class="info-text">${contraPart}</div></div>` : ""}
+
+      <div class="info-block">
+        <div class="info-title">${L.storage}</div>
+        <div class="info-text">${storage}</div>
+      </div>
+
+      <a class="reg-btn" href="https://t.me/VERTERA_UZBEKISTAN_BOT" target="_blank">
+        ${L.regBtn}
+      </a>
+    </div>`;
+
+  document.getElementById("overlay").classList.add("show");
+  setTimeout(()=>document.getElementById("sheet").classList.add("open"),10);
+  document.body.style.overflow="hidden";
+
+  if(window.Telegram?.WebApp?.BackButton){
+    Telegram.WebApp.BackButton.show();
+    Telegram.WebApp.BackButton.onClick(closeSheet);
+  }
+}
+
+function closeSheet(){
+  document.getElementById("sheet").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+  document.body.style.overflow="";
+  if(window.Telegram?.WebApp?.BackButton) Telegram.WebApp.BackButton.hide();
+}
+
+// ══════════════════════════════
+// SEARCH
+// ══════════════════════════════
+const si = document.getElementById("searchInput");
+const sc = document.getElementById("searchClr");
+si.addEventListener("input",()=>{
+  searchQuery = si.value.trim();
+  sc.style.display = searchQuery ? "block" : "none";
+  renderGrid();
+});
+function clearSearch(){ si.value=""; searchQuery=""; sc.style.display="none"; si.focus(); renderGrid(); }
+
+// ══════════════════════════════
+// CATEGORY TABS
+// ══════════════════════════════
+document.querySelectorAll(".cat").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll(".cat").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    currentCat = tab.dataset.cat;
+    renderGrid();
+  });
+});
+
+// ══════════════════════════════
+// TELEGRAM INIT
+// ══════════════════════════════
+if(window.Telegram?.WebApp){
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+renderGrid();
+</script>
+</body>
+</html>
